@@ -207,7 +207,7 @@ const Hero = () => {
   const currentContent = content[activeTab];
 
   return (
-    <section id="inicio" className="relative w-full min-h-screen flex flex-col justify-center p-4 pt-24 lg:pt-0 bg-[#193c5c] overflow-hidden">
+    <section id="inicio" className="relative w-full min-h-screen flex flex-col justify-center p-4 pt-20 lg:pt-0 bg-[#193c5c] overflow-hidden">
       
       {/* Background Animado */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -221,11 +221,11 @@ const Hero = () => {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col h-full justify-center flex-grow">
         
-        {/* Ajustado o gap mobile de 12 para 6 para aproximar o texto do logo */}
+        {/* Ajustado o gap mobile para 4 para aproximar o texto do logo */}
         <div className="grid lg:grid-cols-2 gap-4 lg:gap-16 items-center flex-grow">
           
           {/* Content Side */}
-          <div className="text-center lg:text-left w-full flex flex-col justify-center order-2 lg:order-1 pb-16 lg:pb-0">
+          <div className="text-center lg:text-left w-full flex flex-col justify-center order-2 lg:order-1 pb-12 lg:pb-0">
              <div key={activeTab}>
                 <h1 
                   className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-xl animate-blurIn opacity-0"
