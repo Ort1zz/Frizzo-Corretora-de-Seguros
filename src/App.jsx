@@ -221,7 +221,8 @@ const Hero = () => {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col h-full justify-center flex-grow">
         
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center flex-grow">
+        {/* Ajustado o gap mobile de 12 para 6 para aproximar o texto do logo */}
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-center flex-grow">
           
           {/* Content Side */}
           <div className="text-center lg:text-left w-full flex flex-col justify-center order-2 lg:order-1 pb-16 lg:pb-0">
@@ -267,7 +268,7 @@ const Hero = () => {
           <div className="relative w-full flex flex-col justify-center items-center perspective-1000 order-1 lg:order-2 mb-0 lg:mb-0">
             
             {/* CARDS FLUTUANTES SOBRE O VÍDEO (Logo visível no mobile, Stats escondidos) */}
-            <div className="flex w-full max-w-xl flex-col items-center mb-2 z-20">
+            <div className="flex w-full max-w-xl flex-col items-center mb-0 lg:mb-2 z-20">
                  
                  {/* CARD DA LOGO */}
                  <div className="w-[70%] sm:w-[50%] bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center justify-center shadow-xl transform transition-transform hover:scale-105 mb-2">
@@ -645,45 +646,43 @@ const Contact = () => {
                <iframe title="Localização" className="w-full h-full border-0 opacity-90 hover:opacity-100 transition-opacity" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3656.7149289588315!2d-46.74414042372487!3d-23.578679778787873!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5434d3b729bd%3A0x22dc1a58d07f0ec0!2sFfrizzo%20Seguros!5e0!3m2!1spt-BR!2sbr!4v1764617321726!5m2!1spt-BR!2sbr" allowFullScreen loading="lazy"></iframe>
              </div>
              
-             <div className="grid md:grid-cols-3 gap-6 relative z-10">
+             {/* Grid de Informações com layout de 2 colunas no mobile */}
+             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 relative z-10">
                 <a href="https://www.google.com/maps/place/Ffrizzo+Seguros/@-23.5786798,-46.7441404,17z/data=!4m18!1m9!3m8!1s0x94ce5434d3b729bd:0x22dc1a58d07f0ec0!2sFfrizzo+Seguros!8m2!3d-23.5786798!4d-46.7415655!9m1!1b1!16s%2Fg%2F11bzwxmpml!3m7!1s0x94ce5434d3b729bd:0x22dc1a58d07f0ec0!8m2!3d-23.5786798!4d-46.7415655!9m1!1b1!16s%2Fg%2F11bzwxmpml?entry=ttu&g_ep=EgoyMDI1MTEyMy4xIKXMDSoASAFQAw%3D%3D" target="_blank" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <MapPin className="w-6 h-6" />
+                    <MapPin className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
-                  <div><h4 className="font-bold text-lg">Endereço</h4><p className="text-sm text-white/80">Rua Moacir Miguel da Silva 91</p></div>
+                  <div><h4 className="font-bold text-sm md:text-lg">Endereço</h4><p className="text-[10px] md:text-sm text-white/80">Rua Moacir Miguel 91</p></div>
                 </a>
                 <div className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <Clock className="w-6 h-6" />
+                    <Clock className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
-                  <div><h4 className="font-bold text-lg">Horário</h4><p className="text-sm text-white/80">Seg a Sex, 8h às 17h</p></div>
+                  <div><h4 className="font-bold text-sm md:text-lg">Horário</h4><p className="text-[10px] md:text-sm text-white/80">Seg a Sex, 8h às 17h</p></div>
                 </div>
                 <button onClick={downloadVCard} className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <UserPlus className="w-6 h-6" />
+                    <UserPlus className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
-                  <div><h4 className="font-bold text-lg">Salvar Contato</h4><p className="text-sm text-white/80">Adicionar à agenda</p></div>
+                  <div><h4 className="font-bold text-sm md:text-lg">Contato</h4><p className="text-[10px] md:text-sm text-white/80">Salvar na Agenda</p></div>
                 </button>
-             </div>
-
-             <div className="grid md:grid-cols-3 gap-6 relative z-10">
                 <a href="mailto:administrativo@frizzoseguros.com.br" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <Mail className="w-6 h-6" />
+                    <Mail className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
-                  <div><h4 className="font-bold text-lg">E-mail</h4><p className="text-xs text-white/80 break-all">admin@frizzoseguros.com.br</p></div>
+                  <div><h4 className="font-bold text-sm md:text-lg">E-mail</h4><p className="text-[10px] md:text-sm text-white/80 break-all">Envie um E-mail</p></div>
                 </a>
                 <a href="https://wa.me/5511973039860" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <MessageCircle className="w-6 h-6" />
+                    <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
-                  <div><h4 className="font-bold text-lg">WhatsApp</h4><p className="text-sm text-white/80">Converse conosco!</p></div>
+                  <div><h4 className="font-bold text-sm md:text-lg">WhatsApp</h4><p className="text-[10px] md:text-sm text-white/80">Fale Conosco!</p></div>
                 </a>
                 <a href="https://www.google.com/maps/place/FFrizzo+Seguros/@-23.5786798,-46.7441404,17z/data=!4m18!1m9!3m8!1s0x94ce5434d3b729bd:0x22dc1a58d07f0ec0!2sFFrizzo+Seguros!8m2!3d-23.5786798!4d-46.7415655!9m1!1b1!16s%2Fg%2F11bzwxmpml!3m7!1s0x94ce5434d3b729bd:0x22dc1a58d07f0ec0!8m2!3d-23.5786798!4d-46.7415655!9m1!1b1!16s%2Fg%2F11bzwxmpml?entry=ttu&g_ep=EgoyMDI2MDEyOC4wIKXMDSoKLDEwMDc5MjA2OUgBUAM%3D" target="_blank" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <Star className="w-6 h-6" />
+                    <Star className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
-                  <div><h4 className="font-bold text-lg">Avalie-nos</h4><p className="text-sm text-white/80">Sua opinião importa!</p></div>
+                  <div><h4 className="font-bold text-sm md:text-lg">Avalie-nos</h4><p className="text-[10px] md:text-sm text-white/80">Sua Opinião</p></div>
                 </a>
              </div>
           </div>
@@ -692,38 +691,44 @@ const Contact = () => {
           <div className="lg:col-span-2 p-8 sm:p-10 rounded-3xl shadow-2xl bg-white h-full text-gray-800 border border-gray-100">
              <h2 className="text-3xl font-bold text-center mb-8 text-[#193c5c]">Cotação Online</h2>
              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                   <label className="block text-sm font-bold mb-2 text-gray-600">Seu nome completo</label>
-                   <input required name="name" value={formData.name} onChange={handleChange} type="text" placeholder="Nome Completo" className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                   <div>
-                     <label className="block text-sm font-bold mb-2 text-gray-600">E-mail</label>
-                     <input required name="email" value={formData.email} onChange={handleChange} type="email" placeholder="seu@email.com" className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all" />
+                {/* Container de Grid para o Formulário no Mobile */}
+                <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+                   <div className="col-span-2">
+                      <label className="block text-sm font-bold mb-2 text-gray-600">Seu nome completo</label>
+                      <input required name="name" value={formData.name} onChange={handleChange} type="text" placeholder="Nome Completo" className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all" />
                    </div>
-                   <div>
-                     <label className="block text-sm font-bold mb-2 text-gray-600">WhatsApp</label>
-                     <input required name="phone" value={formData.phone} onChange={handleChange} type="tel" placeholder="(11) 99999-9999" className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all" />
+                   
+                   <div className="col-span-1 md:col-span-1">
+                      <label className="block text-sm font-bold mb-2 text-gray-600">E-mail</label>
+                      <input required name="email" value={formData.email} onChange={handleChange} type="email" placeholder="seu@email.com" className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all" />
+                   </div>
+                   
+                   <div className="col-span-1 md:col-span-1">
+                      <label className="block text-sm font-bold mb-2 text-gray-600">WhatsApp</label>
+                      <input required name="phone" value={formData.phone} onChange={handleChange} type="tel" placeholder="(11) 99999-9999" className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all" />
+                   </div>
+
+                   <div className="col-span-2">
+                      <label className="block text-sm font-bold mb-2 text-gray-600">Tipo de Seguro</label>
+                      <select required name="type" value={formData.type} onChange={handleChange} className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all">
+                         <option value="">Selecione...</option>
+                         <option value="saude">Saúde</option>
+                         <option value="consorcio">Consórcio</option>
+                         <option value="auto">Auto</option>
+                         <option value="vida">Vida</option>
+                         <option value="empresarial">Empresarial</option>
+                         <option value="residencial">Residencial</option>
+                         <option value="viagem">Viagem</option>
+                      </select>
+                   </div>
+                   
+                   <div className="col-span-2">
+                      <label className="block text-sm font-bold mb-2 text-gray-600">Mensagem</label>
+                      <textarea required name="message" value={formData.message} onChange={handleChange} rows="4" placeholder="Descreva sua necessidade..." className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all resize-none"></textarea>
                    </div>
                 </div>
-                <div>
-                   <label className="block text-sm font-bold mb-2 text-gray-600">Tipo de Seguro</label>
-                   <select required name="type" value={formData.type} onChange={handleChange} className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all">
-                      <option value="">Selecione...</option>
-                      <option value="saude">Saúde</option>
-                      <option value="consorcio">Consórcio</option>
-                      <option value="auto">Auto</option>
-                      <option value="vida">Vida</option>
-                      <option value="empresarial">Empresarial</option>
-                      <option value="residencial">Residencial</option>
-                      <option value="viagem">Viagem</option>
-                   </select>
-                </div>
-                <div>
-                   <label className="block text-sm font-bold mb-2 text-gray-600">Mensagem</label>
-                   <textarea required name="message" value={formData.message} onChange={handleChange} rows="4" placeholder="Descreva sua necessidade..." className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all resize-none"></textarea>
-                </div>
-                <div className="text-center pt-2">
+
+                <div className="text-center pt-4">
                    <button type="submit" className="w-full bg-[#193c5c] text-white font-bold py-4 px-8 rounded-lg hover:bg-[#13acd3] transition-all transform hover:scale-[1.02] shadow-lg">
                      Solicitar Cotação
                    </button>
