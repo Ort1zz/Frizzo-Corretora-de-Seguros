@@ -222,7 +222,7 @@ const Hero = () => {
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col h-full justify-center flex-grow">
         
         {/* Ajustado o gap mobile de 12 para 6 para aproximar o texto do logo */}
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-center flex-grow">
+        <div className="grid lg:grid-cols-2 gap-4 lg:gap-16 items-center flex-grow">
           
           {/* Content Side */}
           <div className="text-center lg:text-left w-full flex flex-col justify-center order-2 lg:order-1 pb-16 lg:pb-0">
