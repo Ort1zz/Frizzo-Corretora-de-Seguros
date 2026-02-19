@@ -3,7 +3,7 @@ import {
   Menu, X, Instagram, Facebook, Linkedin, 
   Heart, KeyRound, CarFront, Activity, Building2, 
   Home, Smartphone, Plane, MapPin, Clock, Phone, 
-  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Pause, Shield, Cookie
+  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Pause, Shield, Info
 } from 'lucide-react';
 
 // --- Textos Legais ---
@@ -39,16 +39,14 @@ const termsOfUseContent = (
 
 // Função para gerar e baixar o vCard (Contato)
 const downloadVCard = () => {
-  // Dados do contato
   const contact = {
     name: "Frizzo Corretora de Seguros",
     phone: "+5511973039860",
     email: "administrativo@frizzoseguros.com.br",
-    website: "https://www.frizzoseguros.com.br", // Ajuste se tiver um domínio real
+    website: "https://www.frizzoseguros.com.br", 
     address: "Rua Moacir Miguel da Silva, 91 - Jd. Bonfiglioli, São Paulo - SP"
   };
 
-  // Formato vCard 3.0
   const vCardData = `BEGIN:VCARD
 VERSION:3.0
 FN:${contact.name}
@@ -59,7 +57,6 @@ URL:${contact.website}
 ADR;TYPE=WORK:;;${contact.address}
 END:VCARD`;
 
-  // Cria um Blob e um link para download
   const blob = new Blob([vCardData], { type: "text/vcard" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -205,15 +202,12 @@ const Hero = () => {
   const [activeTab, setActiveTab] = useState('saude');
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   
-  // Função para lidar com a troca de abas
   const handleTabChange = (tab) => {
     if (tab === activeTab) return;
     setActiveTab(tab);
   };
 
-  // Efeito para rotação automática das abas a cada 8 segundos
   useEffect(() => {
-    // Se o modal de vídeo estiver aberto, não rotaciona
     if (videoModalOpen) return;
 
     const tabs = ['saude', 'consorcio', 'auto', 'empresarial'];
@@ -224,9 +218,8 @@ const Hero = () => {
         const nextIndex = (currentIndex + 1) % tabs.length;
         return tabs[nextIndex];
       });
-    }, 8000); // 8000ms = 8 segundos
+    }, 8000);
 
-    // Limpa o intervalo quando o componente desmonta ou quando a aba muda manualmente (reiniciando o timer)
     return () => clearInterval(interval);
   }, [activeTab, videoModalOpen]);
 
@@ -300,7 +293,7 @@ const Hero = () => {
                 {/* Botões de Ação */}
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-blurIn" style={{ animationDelay: '300ms' }}>
                   <a 
-                    href={`https://wa.me/5511987654321?text=${encodeURIComponent(currentContent.wppText)}`}
+                    href={`https://wa.me/5511973039860?text=${encodeURIComponent(currentContent.wppText)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`w-full sm:w-auto group relative inline-flex items-center justify-center px-10 py-4 font-bold text-white text-lg transition-all duration-300 bg-gradient-to-r ${currentContent.color} font-pj rounded-full focus:outline-none hover:scale-105 shadow-lg hover:shadow-2xl hover:-translate-y-1`}
@@ -799,63 +792,65 @@ const Contact = () => {
 };
 
 // Componente inteligente para os Vídeos Sociais (Estilo Reels/TikTok)
-const VideoCard = ({ src, index }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+const VideoCard = ({ id, src, index, playingVideoId, setPlayingVideoId }) => {
   const [showOverlay, setShowOverlay] = useState(true);
   const videoRef = useRef(null);
-  const timerRef = useRef(null);
+  const hideTimerRef = useRef(null);
 
-  // Altera entre Play e Pause
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
+  // Determina se este vídeo específico deve tocar verificando o estado global
+  const isPlaying = playingVideoId === id;
+
+  // Sincroniza o estado do React com o elemento de vídeo real (Única Fonte da Verdade)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn("Navegador bloqueou o autoplay:", error);
+          // Se o navegador bloquear (ex: falta de interação prévia), reseta o estado
+          setPlayingVideoId(null);
+        });
       }
+      startHideTimer();
+    } else {
+      video.pause();
+      setShowOverlay(true);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     }
-  };
+  }, [isPlaying, setPlayingVideoId]);
 
-  // Eventos nativos do vídeo para garantir o ícone correto
-  const handlePlay = () => {
-    setIsPlaying(true);
-    startFadeOutTimer();
-  };
-
-  const handlePause = () => {
-    setIsPlaying(false);
+  const startHideTimer = () => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     setShowOverlay(true);
-    if (timerRef.current) clearTimeout(timerRef.current);
-  };
-
-  // Esconde o controle após 1.5s se estiver tocando
-  const startFadeOutTimer = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    setShowOverlay(true);
-    timerRef.current = setTimeout(() => {
-      if (videoRef.current && !videoRef.current.paused) {
-        setShowOverlay(false);
-      }
+    hideTimerRef.current = setTimeout(() => {
+      setShowOverlay(false);
     }, 1500);
   };
 
-  // Se mexer o mouse em cima, os controles aparecem
+  // Ao invés de usar os eventos nativos (onPlay/onPause), apenas mudamos quem é o "Rei" no momento
+  const handleTogglePlay = () => {
+    if (isPlaying) {
+      setPlayingVideoId(null); // Pausa o atual se clicar nele de novo
+    } else {
+      setPlayingVideoId(id); // Dá play neste e pausa os outros automaticamente
+    }
+  };
+
   const handleMouseMove = () => {
-    if (isPlaying) {
-      startFadeOutTimer();
-    }
+    if (isPlaying) startHideTimer();
   };
 
-  // Se o mouse sair do card e estiver tocando, os controles somem logo
   const handleMouseLeave = () => {
-    if (isPlaying) {
-      setShowOverlay(false);
-    }
+    if (isPlaying) setShowOverlay(false);
   };
 
+  // Limpeza de memória
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     };
   }, []);
 
@@ -867,14 +862,11 @@ const VideoCard = ({ src, index }) => {
     >
       <div 
         className="w-full aspect-[9/16] bg-black/20 rounded-lg flex items-center justify-center relative group overflow-hidden cursor-pointer"
-        onClick={togglePlay}
+        onClick={handleTogglePlay}
       >
-         {/* Retirado o 'controls' para usarmos o nosso controle personalizado */}
          <video 
            ref={videoRef}
            className="w-full h-full object-cover rounded-lg" 
-           onPlay={handlePlay}
-           onPause={handlePause}
            playsInline
            loop
          >
@@ -892,16 +884,17 @@ const VideoCard = ({ src, index }) => {
   );
 };
 
-const Socials = () => {
-  // Defina aqui os 4 vídeos que você quer mostrar
-  const initialVideos = [
-    { id: 1, src: "/img/video1.mp4" }, 
-    { id: 2, src: "/img/video2.mp4" },
-    { id: 3, src: "/img/video3.mp4" },
-    { id: 4, src: "/img/video4.mp4" }
-  ];
+// Definição dos vídeos fora do componente para evitar problemas de re-renderização
+const initialVideos = [
+  { id: 1, src: "/img/video1.mp4" }, 
+  { id: 2, src: "/img/video2.mp4" },
+  { id: 3, src: "/img/video3.mp4" },
+  { id: 4, src: "/img/video4.mp4" }
+];
 
+const Socials = () => {
   const [socialVideos, setSocialVideos] = useState(initialVideos);
+  const [playingVideoId, setPlayingVideoId] = useState(null); // Única fonte da verdade de qual vídeo está tocando
 
   useEffect(() => {
     // Embaralha a lista de vídeos aleatoriamente ao carregar a página
@@ -933,7 +926,14 @@ const Socials = () => {
          {/* Grid de Vídeos com o novo componente VideoCard */}
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
              {socialVideos.map((video, index) => (
-               <VideoCard key={video.id} src={video.src} index={index} />
+               <VideoCard 
+                 key={video.id} 
+                 id={video.id}
+                 src={video.src} 
+                 index={index} 
+                 playingVideoId={playingVideoId}
+                 setPlayingVideoId={setPlayingVideoId}
+               />
              ))}
          </div>
 
@@ -1005,7 +1005,7 @@ const CookieBanner = ({ onOpenPrivacy }) => {
     <div className="fixed bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-auto md:w-[400px] z-[70] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 p-6 animate-slideUpFade">
       <div className="flex items-start gap-4">
         <div className="p-3 bg-gradient-to-br from-[#13acd3]/20 to-[#01cbfe]/20 text-[#13acd3] rounded-2xl flex-shrink-0">
-          <Cookie size={24} />
+          <Info size={24} />
         </div>
         <div>
           <h4 className="font-bold text-[#193c5c] mb-1.5 text-lg">Aviso de Cookies</h4>
@@ -1034,7 +1034,6 @@ const CookieBanner = ({ onOpenPrivacy }) => {
 
 // Componente da Janela Modal para os textos legais
 const LegalModal = ({ title, content, onClose }) => {
-  // Previne o scroll da página de fundo quando o modal está aberto
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -1065,7 +1064,7 @@ const LegalModal = ({ title, content, onClose }) => {
 };
 
 export default function App() {
-  const [activeModal, setActiveModal] = useState(null); // 'privacy' | 'terms' | null
+  const [activeModal, setActiveModal] = useState(null); 
 
   return (
     <div className="font-sans antialiased text-gray-800 bg-white selection:bg-[#01cbfe] selection:text-white">
@@ -1149,7 +1148,6 @@ export default function App() {
       
       <CookieBanner onOpenPrivacy={() => setActiveModal('privacy')} />
       
-      {/* Exibição Condicional das Modais */}
       {activeModal === 'privacy' && (
         <LegalModal 
           title="Política de Privacidade" 
