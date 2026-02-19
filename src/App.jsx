@@ -3,7 +3,7 @@ import {
   Menu, X, Instagram, Facebook, Linkedin, 
   Heart, KeyRound, CarFront, Activity, Building2, 
   Home, Smartphone, Plane, MapPin, Clock, Phone, 
-  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play
+  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Shield
 } from 'lucide-react';
 
 // --- Funções Auxiliares ---
@@ -77,14 +77,14 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Início', href: '#inicio' },
-    { name: 'Seguros', href: '#seguros' },
-    { name: 'Frizzolândia', href: '#porque-frizzo' },
-    { name: 'Redes', href: '#frizzolandia' }, 
+    { name: 'Início', href: '#inicio', icon: Home },
+    { name: 'Seguros', href: '#seguros', icon: Shield },
+    { name: 'Frizzolândia', href: '#porque-frizzo', icon: Star },
+    { name: 'Redes', href: '#frizzolandia', icon: Instagram }, 
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 transform ${isVisible ? 'translate-y-0' : '-translate-y-full'} ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-white py-4'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 transform ${isVisible || isOpen ? 'translate-y-0' : '-translate-y-full'} ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-white py-4'}`}>
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#01cbfe] to-[#193c5c]"></div>
       
       <nav className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
@@ -120,25 +120,53 @@ const Header = () => {
         </div>
 
         <div className="flex-1 flex justify-end items-center">
-          <a href="#contato" className="relative overflow-hidden bg-[#13acd3] text-white px-5 py-2 rounded-md hover:bg-[#01cbfe] transition-all duration-300 shadow-md font-semibold text-sm flex items-center gap-2 group">
-            <span className="hidden sm:inline">Cotação Online</span>
-            <span className="sm:hidden">Cotar</span>
+          <a href="#contato" className="hidden md:flex relative overflow-hidden bg-[#13acd3] text-white px-5 py-2 rounded-md hover:bg-[#01cbfe] transition-all duration-300 shadow-md font-semibold text-sm items-center gap-2 group">
+            <span>Cotação Online</span>
             <ChevronRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
       </nav>
 
-      <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 z-40 ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-        {navLinks.map((link) => (
-          <a 
-            key={link.name} 
-            href={link.href} 
-            onClick={() => setIsOpen(false)}
-            className="block py-4 px-6 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#13acd3] font-medium border-b border-gray-100 transition-colors"
-          >
-            {link.name}
+      {/* Overlay Escuro do Menu Mobile */}
+      <div 
+        className={`md:hidden fixed inset-0 bg-[#193c5c]/60 backdrop-blur-md z-40 transition-all duration-500 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
+        onClick={() => setIsOpen(false)}
+      ></div>
+
+      {/* Sidebar Elegante do Menu Mobile */}
+      <div className={`md:hidden fixed top-0 left-0 h-[100dvh] w-[70%] max-w-[260px] bg-white shadow-2xl z-50 transform transition-all duration-500 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+          <img src="/img/logo-header.png" alt="Frizzo" className="h-8 w-auto" onError={(e) => {e.target.style.display='none'}} />
+          <button onClick={() => setIsOpen(false)} className="p-2 text-gray-400 hover:text-gray-800 hover:bg-white rounded-full transition-all shadow-sm border border-transparent hover:border-gray-200">
+            <X size={20} />
+          </button>
+        </div>
+        
+        <div className="flex flex-col p-6 space-y-2 overflow-y-auto flex-grow">
+          {navLinks.map((link, index) => {
+            const Icon = link.icon;
+            return (
+              <a 
+                key={link.name} 
+                href={link.href} 
+                onClick={() => setIsOpen(false)}
+                style={{ transitionDelay: `${index * 50}ms` }}
+                className={`flex items-center gap-4 py-3 px-5 rounded-2xl text-gray-600 hover:bg-gradient-to-r hover:from-[#13acd3]/10 hover:to-transparent hover:text-[#193c5c] font-bold text-lg transition-all duration-300 group border border-transparent hover:border-[#13acd3]/20 ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
+              >
+                <div className="p-2.5 bg-gray-50 rounded-xl group-hover:bg-white group-hover:shadow-sm group-hover:text-[#13acd3] transition-all duration-300 text-gray-400">
+                  <Icon size={22} strokeWidth={2.5} />
+                </div>
+                {link.name}
+              </a>
+            );
+          })}
+        </div>
+        
+        <div className="p-6 mt-auto">
+          <a href="#contato" onClick={() => setIsOpen(false)} className="w-full flex justify-center items-center gap-2 bg-[#193c5c] text-white py-4 rounded-xl font-bold hover:bg-[#13acd3] transition-colors shadow-lg shadow-[#193c5c]/20">
+            Fale Conosco <MessageCircle size={18} />
           </a>
-        ))}
+        </div>
       </div>
     </header>
   );
@@ -228,20 +256,20 @@ const Hero = () => {
           <div className="text-center lg:text-left w-full flex flex-col justify-center order-2 lg:order-1 pb-12 lg:pb-0">
              <div key={activeTab}>
                 <h1 
-                  className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-xl animate-blurIn opacity-0"
+                  className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-xl animate-blurIn"
                   style={{ animationDelay: '0ms' }}
                 >
                   {currentContent.title}
                 </h1>
                 <p 
-                  className="text-lg text-white/90 max-w-xl mx-auto lg:mx-0 mb-8 lg:mb-10 leading-relaxed font-light animate-blurIn opacity-0"
+                  className="text-lg text-white/90 max-w-xl mx-auto lg:mx-0 mb-8 lg:mb-10 leading-relaxed font-light animate-blurIn"
                   style={{ animationDelay: '150ms' }}
                 >
                   {currentContent.text}
                 </p>
                 
                 {/* Botões de Ação */}
-                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-blurIn opacity-0" style={{ animationDelay: '300ms' }}>
+                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-blurIn" style={{ animationDelay: '300ms' }}>
                   <a 
                     href={`https://wa.me/5511987654321?text=${encodeURIComponent(currentContent.wppText)}`}
                     target="_blank"
@@ -271,7 +299,7 @@ const Hero = () => {
             <div className="flex w-full max-w-xl flex-col items-center mb-0 lg:mb-2 z-20">
                  
                  {/* CARD DA LOGO */}
-                 <div className="w-[70%] sm:w-[50%] bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center justify-center shadow-xl transform transition-transform hover:scale-105 mb-2">
+                 <div className="w-[70%] sm:w-[50%] bg-white/10 backdrop-blur-md rounded-2xl py-2 px-4 border border-white/10 flex items-center justify-center shadow-xl transform transition-transform hover:scale-105 mb-2">
                     <img src="/img/logo-hero.png" alt="Frizzo Seguros" className="h-16 w-auto object-contain" />
                  </div>
 
@@ -856,11 +884,11 @@ export default function App() {
         }
 
         @keyframes blurIn {
-          from { opacity: 0; transform: translateY(20px) scale(0.95); filter: blur(5px); }
-          to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+          0% { opacity: 0; transform: translateY(20px) scale(0.95); filter: blur(5px); }
+          100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
         }
         .animate-blurIn {
-          animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
         @keyframes zoomIn {
