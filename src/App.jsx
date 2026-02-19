@@ -3,8 +3,37 @@ import {
   Menu, X, Instagram, Facebook, Linkedin, 
   Heart, KeyRound, CarFront, Activity, Building2, 
   Home, Smartphone, Plane, MapPin, Clock, Phone, 
-  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Shield
+  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Pause, Shield, Cookie
 } from 'lucide-react';
+
+// --- Textos Legais ---
+const privacyPolicyContent = (
+  <div className="space-y-4 text-gray-600 text-sm leading-relaxed text-left">
+    <p>A <strong>Frizzo Corretora de Seguros</strong> valoriza a sua privacidade e está comprometida em proteger os seus dados pessoais. Esta Política de Privacidade explica como recolhemos, usamos e partilhamos informações quando utiliza o nosso site.</p>
+    <h4 className="font-bold text-gray-800 text-base mt-4">1. Dados que Recolhemos</h4>
+    <p>Recolhemos dados pessoais que nos fornece voluntariamente através dos nossos formulários de contacto e cotação, tais como: nome completo, endereço de e-mail, número de telefone (WhatsApp) e tipo de seguro desejado.</p>
+    <h4 className="font-bold text-gray-800 text-base mt-4">2. Como Usamos os Seus Dados</h4>
+    <p>Os dados recolhidos são utilizados exclusivamente para: processar e responder aos seus pedidos de cotação; comunicar consigo sobre produtos e serviços; melhorar a experiência de navegação no nosso site; e para fins de remarketing e análises estatísticas, sempre em conformidade com a Lei Geral de Proteção de Dados (LGPD).</p>
+    <h4 className="font-bold text-gray-800 text-base mt-4">3. Partilha de Dados</h4>
+    <p>As suas informações podem ser partilhadas estritamente com as nossas seguradoras parceiras (ex: SulAmérica, Porto Seguro, Amil, Allianz, etc.) com o único propósito de gerar as cotações solicitadas. Não vendemos nem alugamos os seus dados a terceiros.</p>
+    <h4 className="font-bold text-gray-800 text-base mt-4">4. Direitos do Titular (LGPD)</h4>
+    <p>De acordo com a LGPD, tem o direito de solicitar o acesso, correção, atualização ou eliminação dos seus dados pessoais da nossa base de dados a qualquer momento, bastando contactar-nos através dos nossos canais oficiais de atendimento.</p>
+  </div>
+);
+
+const termsOfUseContent = (
+  <div className="space-y-4 text-gray-600 text-sm leading-relaxed text-left">
+    <p>Bem-vindo ao site da <strong>Frizzo Corretora de Seguros</strong>. Ao aceder e utilizar este site, concorda com os presentes Termos de Uso.</p>
+    <h4 className="font-bold text-gray-800 text-base mt-4">1. Serviços Oferecidos</h4>
+    <p>O nosso site disponibiliza informações sobre os nossos serviços de corretagem de seguros (saúde, automóvel, empresarial, vida, consórcio, etc.) e permite que os utilizadores solicitem cotações online. Os valores e condições apresentados em simulações estão sujeitos a análise e aprovação das respetivas seguradoras.</p>
+    <h4 className="font-bold text-gray-800 text-base mt-4">2. Responsabilidades do Utilizador</h4>
+    <p>Ao solicitar uma cotação, o utilizador compromete-se a fornecer informações verdadeiras, exatas e completas. A Frizzo Corretora não se responsabiliza por cotações imprecisas resultantes de dados incorretos fornecidos pelo utilizador.</p>
+    <h4 className="font-bold text-gray-800 text-base mt-4">3. Propriedade Intelectual</h4>
+    <p>Todo o conteúdo, design, logótipos e imagens presentes neste site são propriedade da Frizzo Corretora de Seguros ou dos seus parceiros e estão protegidos pelas leis de direitos de autor.</p>
+    <h4 className="font-bold text-gray-800 text-base mt-4">4. Limitação de Responsabilidade</h4>
+    <p>Esforçamo-nos para manter o site atualizado e livre de erros, mas não garantimos que o funcionamento seja ininterrupto. A Frizzo Corretora não será responsável por quaisquer danos diretos ou indiretos decorrentes do uso ou da incapacidade de usar o nosso site.</p>
+  </div>
+);
 
 // --- Funções Auxiliares ---
 
@@ -769,7 +798,117 @@ const Contact = () => {
   );
 };
 
+// Componente inteligente para os Vídeos Sociais (Estilo Reels/TikTok)
+const VideoCard = ({ src, index }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const videoRef = useRef(null);
+  const timerRef = useRef(null);
+
+  // Altera entre Play e Pause
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+    }
+  };
+
+  // Eventos nativos do vídeo para garantir o ícone correto
+  const handlePlay = () => {
+    setIsPlaying(true);
+    startFadeOutTimer();
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
+    setShowOverlay(true);
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
+
+  // Esconde o controle após 1.5s se estiver tocando
+  const startFadeOutTimer = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setShowOverlay(true);
+    timerRef.current = setTimeout(() => {
+      if (videoRef.current && !videoRef.current.paused) {
+        setShowOverlay(false);
+      }
+    }, 1500);
+  };
+
+  // Se mexer o mouse em cima, os controles aparecem
+  const handleMouseMove = () => {
+    if (isPlaying) {
+      startFadeOutTimer();
+    }
+  };
+
+  // Se o mouse sair do card e estiver tocando, os controles somem logo
+  const handleMouseLeave = () => {
+    if (isPlaying) {
+      setShowOverlay(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  return (
+    <div 
+      className={`bg-white/10 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 p-2 transform hover:scale-105 transition-transform duration-300 ${index > 0 ? 'hidden sm:block' : 'block'}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div 
+        className="w-full aspect-[9/16] bg-black/20 rounded-lg flex items-center justify-center relative group overflow-hidden cursor-pointer"
+        onClick={togglePlay}
+      >
+         {/* Retirado o 'controls' para usarmos o nosso controle personalizado */}
+         <video 
+           ref={videoRef}
+           className="w-full h-full object-cover rounded-lg" 
+           onPlay={handlePlay}
+           onPause={handlePause}
+           playsInline
+           loop
+         >
+           <source src={src} type="video/mp4" />
+         </video>
+         
+         {/* Overlay com Ícones Play/Pause */}
+         <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 z-20 ${showOverlay ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="bg-black/50 backdrop-blur-md p-4 rounded-full text-white shadow-xl border border-white/20 transform transition-transform duration-300 hover:scale-110">
+               {isPlaying ? <Pause fill="currentColor" size={28} /> : <Play fill="currentColor" size={28} className="ml-1" />}
+            </div>
+         </div>
+      </div>
+    </div>
+  );
+};
+
 const Socials = () => {
+  // Defina aqui os 4 vídeos que você quer mostrar
+  const initialVideos = [
+    { id: 1, src: "/img/video1.mp4" }, 
+    { id: 2, src: "/img/video2.mp4" },
+    { id: 3, src: "/img/video3.mp4" },
+    { id: 4, src: "/img/video4.mp4" }
+  ];
+
+  const [socialVideos, setSocialVideos] = useState(initialVideos);
+
+  useEffect(() => {
+    // Embaralha a lista de vídeos aleatoriamente ao carregar a página
+    const shuffled = [...initialVideos].sort(() => 0.5 - Math.random());
+    setSocialVideos(shuffled);
+  }, []);
+
   return (
     <section id="frizzolandia" className="pt-10 pb-20 lg:pt-12 lg:pb-24 bg-[#193c5c] overflow-hidden">
        <div className="container mx-auto px-6">
@@ -791,24 +930,10 @@ const Socials = () => {
              </a>
          </div>
 
-         {/* Grid de Vídeos com limitação no mobile */}
+         {/* Grid de Vídeos com o novo componente VideoCard */}
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-             {[1, 2, 3, 4].map((i) => (
-               <div 
-                 key={i} 
-                 className={`bg-white/10 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 p-2 transform hover:scale-105 transition-transform duration-300 ${i > 1 ? 'hidden sm:block' : 'block'}`}
-               >
-                 <div className="w-full aspect-[9/16] bg-black/20 rounded-lg flex items-center justify-center relative group">
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
-                        <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full">
-                            <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1"></div>
-                        </div>
-                    </div>
-                    <video className="w-full h-full object-cover rounded-lg" controls>
-                      <source src="/img/teste.mp4" type="video/mp4" />
-                    </video>
-                 </div>
-               </div>
+             {socialVideos.map((video, index) => (
+               <VideoCard key={video.id} src={video.src} index={index} />
              ))}
          </div>
 
@@ -827,13 +952,13 @@ const Socials = () => {
   );
 };
 
-const Footer = () => (
+const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
   <footer className="bg-white border-t border-gray-200">
      <div className="container mx-auto py-8 px-6 flex flex-wrap justify-between items-center text-sm text-gray-600">
         <div className="w-full md:w-auto text-center md:text-left mb-4 md:mb-0 font-medium">&copy; 2026 Frizzo Corretora de Seguros.</div>
         <div className="w-full md:w-auto flex justify-center space-x-8 mb-4 md:mb-0">
-           <a href="#" className="hover:text-[#13acd3] transition-colors">Política de Privacidade</a>
-           <a href="#" className="hover:text-[#13acd3] transition-colors">Termos de Uso</a>
+           <button onClick={onOpenPrivacy} className="hover:text-[#13acd3] transition-colors focus:outline-none">Política de Privacidade</button>
+           <button onClick={onOpenTerms} className="hover:text-[#13acd3] transition-colors focus:outline-none">Termos de Uso</button>
         </div>
         <div className="w-full md:w-auto flex justify-center space-x-6">
            <a href="https://br.linkedin.com/company/frizzoseguros" target="_blank" className="text-[#13acd3] opacity-60 hover:opacity-100 transition-opacity hover:scale-110 transform duration-200">
@@ -850,7 +975,98 @@ const Footer = () => (
   </footer>
 );
 
+const CookieBanner = ({ onOpenPrivacy }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    try {
+      const consent = localStorage.getItem('cookieConsent');
+      if (!consent) {
+        setIsVisible(true);
+      }
+    } catch (error) {
+      console.warn('Acesso ao localStorage bloqueado pelo ambiente de preview.');
+      setIsVisible(true);
+    }
+  }, []);
+
+  const acceptCookies = () => {
+    try {
+      localStorage.setItem('cookieConsent', 'true');
+    } catch (error) {
+      console.warn('Não foi possível salvar no localStorage neste ambiente.');
+    }
+    setIsVisible(false);
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="fixed bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-auto md:w-[400px] z-[70] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 p-6 animate-slideUpFade">
+      <div className="flex items-start gap-4">
+        <div className="p-3 bg-gradient-to-br from-[#13acd3]/20 to-[#01cbfe]/20 text-[#13acd3] rounded-2xl flex-shrink-0">
+          <Cookie size={24} />
+        </div>
+        <div>
+          <h4 className="font-bold text-[#193c5c] mb-1.5 text-lg">Aviso de Cookies</h4>
+          <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+            Utilizamos cookies para personalizar conteúdos e melhorar a sua experiência. Ao continuar, concorda com a nossa <button onClick={onOpenPrivacy} className="text-[#13acd3] hover:underline font-semibold focus:outline-none">Política de Privacidade</button>.
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={acceptCookies}
+              className="flex-1 bg-[#193c5c] hover:bg-[#13acd3] text-white font-bold py-2.5 px-4 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95 text-sm"
+            >
+              Aceitar
+            </button>
+            <button
+              onClick={() => setIsVisible(false)}
+              className="px-4 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-colors text-sm"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Componente da Janela Modal para os textos legais
+const LegalModal = ({ title, content, onClose }) => {
+  // Previne o scroll da página de fundo quando o modal está aberto
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn" onClick={onClose}>
+      <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-zoomIn" onClick={e => e.stopPropagation()}>
+        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+          <h3 className="text-xl font-bold text-[#193c5c]">{title}</h3>
+          <button onClick={onClose} className="p-2 text-gray-400 hover:text-[#13acd3] hover:bg-white rounded-full transition-all shadow-sm border border-transparent hover:border-gray-200">
+            <X size={20} />
+          </button>
+        </div>
+        <div className="p-6 overflow-y-auto flex-grow">
+          {content}
+        </div>
+        <div className="p-4 border-t border-gray-100 bg-gray-50 text-right">
+          <button onClick={onClose} className="bg-[#193c5c] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#13acd3] transition-colors text-sm shadow-md">
+            Entendido
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function App() {
+  const [activeModal, setActiveModal] = useState(null); // 'privacy' | 'terms' | null
+
   return (
     <div className="font-sans antialiased text-gray-800 bg-white selection:bg-[#01cbfe] selection:text-white">
       <style>{`
@@ -880,7 +1096,7 @@ export default function App() {
           to { opacity: 1; }
         }
         .animate-fadeIn {
-          animation: fadeIn 0.5s ease-in forwards;
+          animation: fadeIn 0.3s ease-in forwards;
         }
 
         @keyframes blurIn {
@@ -896,7 +1112,7 @@ export default function App() {
           to { opacity: 1; transform: scale(1); }
         }
         .animate-zoomIn {
-          animation: zoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes float {
@@ -926,7 +1142,29 @@ export default function App() {
       <Frizzolandia />
       <Contact />
       <Socials />
-      <Footer />
+      <Footer 
+        onOpenPrivacy={() => setActiveModal('privacy')} 
+        onOpenTerms={() => setActiveModal('terms')} 
+      />
+      
+      <CookieBanner onOpenPrivacy={() => setActiveModal('privacy')} />
+      
+      {/* Exibição Condicional das Modais */}
+      {activeModal === 'privacy' && (
+        <LegalModal 
+          title="Política de Privacidade" 
+          content={privacyPolicyContent} 
+          onClose={() => setActiveModal(null)} 
+        />
+      )}
+      
+      {activeModal === 'terms' && (
+        <LegalModal 
+          title="Termos de Uso" 
+          content={termsOfUseContent} 
+          onClose={() => setActiveModal(null)} 
+        />
+      )}
       
       <a 
         href="https://wa.me/5511973039860"
