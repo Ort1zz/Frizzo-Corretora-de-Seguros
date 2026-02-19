@@ -1067,9 +1067,49 @@ export default function App() {
   const [activeModal, setActiveModal] = useState(null); 
 
   return (
-    <div className="font-sans antialiased text-gray-800 bg-white selection:bg-[#01cbfe] selection:text-white">
+    <div 
+      className="font-sans antialiased text-gray-800 bg-white selection:bg-[#01cbfe] selection:text-white"
+      onContextMenu={(e) => e.preventDefault()}
+      onDragStart={(e) => e.preventDefault()}
+    >
       <style>{`
         html { scroll-behavior: smooth; }
+        
+        /* Regras de proteção do conteúdo */
+        body {
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+        
+        /* Permite seleção de texto apenas nos formulários */
+        input, textarea, select {
+          -webkit-touch-callout: default;
+          -webkit-user-select: auto;
+          -khtml-user-select: auto;
+          -moz-user-select: auto;
+          -ms-user-select: auto;
+          user-select: auto;
+        }
+
+        /* Impede o arraste e salvamento de imagens */
+        img {
+          -webkit-user-drag: none;
+          -khtml-user-drag: none;
+          -moz-user-drag: none;
+          -o-user-drag: none;
+          user-drag: none;
+          pointer-events: none;
+        }
+
+        /* Exceção para imagens que precisam de clique (como as logos das seguradoras) */
+        .cursor-pointer img {
+          pointer-events: auto;
+        }
+
         @keyframes scroll {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
