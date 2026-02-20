@@ -102,6 +102,18 @@ const Header = () => {
     };
   }, []);
 
+  // Bloqueia o scroll da página quando o menu mobile está aberto
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   const navLinks = [
     { name: 'Início', href: '#inicio', icon: Home },
     { name: 'Seguros', href: '#seguros', icon: Shield },
