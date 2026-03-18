@@ -248,14 +248,14 @@ const Hero = () => {
       text: "Planeje a conquista do seu carro ou imóvel de forma inteligente e sem juros. Economia e segurança para o seu futuro.",
       buttonText: "Simule seu Consórcio",
       wppText: "Olá! Gostaria de simular um consórcio.",
-      color: "from-emerald-500 to-teal-500"
+      color: "from-amber-400 to-orange-500"
     },
     auto: {
       title: "Seu Veículo Seguro, Sua Rotina sem Imprevistos.",
       text: "Dirija com a tranquilidade de saber que seu carro está protegido. Coberturas completas e assistência 24h.",
       buttonText: "Cote seu Seguro Auto",
       wppText: "Olá! Gostaria de cotar um seguro para meu veículo.",
-      color: "from-orange-500 to-red-500"
+      color: "from-indigo-500 to-violet-600"
     },
     empresarial: {
       title: "Proteção Completa para o Seu Negócio.",
@@ -428,7 +428,7 @@ const Hero = () => {
              <button 
                 onClick={() => handleTabChange('consorcio')}
                 title="Consórcio"
-                className={`relative w-12 h-12 rounded-full flex items-center justify-center z-10 transition-all duration-300 ease-out group ${activeTab === 'consorcio' ? 'bg-white text-emerald-500 shadow-lg scale-110 ring-4 ring-emerald-500/20' : 'text-white hover:bg-white/10'}`}
+                className={`relative w-12 h-12 rounded-full flex items-center justify-center z-10 transition-all duration-300 ease-out group ${activeTab === 'consorcio' ? 'bg-white text-amber-500 shadow-lg scale-110 ring-4 ring-amber-500/20' : 'text-white hover:bg-white/10'}`}
              >
                 <KeyRound size={24} strokeWidth={activeTab === 'consorcio' ? 3 : 2} className="transition-transform duration-300" />
              </button>
@@ -436,7 +436,7 @@ const Hero = () => {
              <button 
                 onClick={() => handleTabChange('auto')}
                 title="Seguro Auto"
-                className={`relative w-12 h-12 rounded-full flex items-center justify-center z-10 transition-all duration-300 ease-out group ${activeTab === 'auto' ? 'bg-white text-orange-500 shadow-lg scale-110 ring-4 ring-orange-500/20' : 'text-white hover:bg-white/10'}`}
+                className={`relative w-12 h-12 rounded-full flex items-center justify-center z-10 transition-all duration-300 ease-out group ${activeTab === 'auto' ? 'bg-white text-indigo-500 shadow-lg scale-110 ring-4 ring-indigo-500/20' : 'text-white hover:bg-white/10'}`}
              >
                 <CarFront size={24} strokeWidth={activeTab === 'auto' ? 3 : 2} className="transition-transform duration-300" />
              </button>
@@ -473,8 +473,8 @@ const Hero = () => {
             </button>
             <div className="aspect-video">
               <video className="w-full h-full object-cover" controls playsInline autoPlay>
-                  <source src="/img/video-institucional.mp4" type="video/mp4" />
-                  Seu navegador não suporta a tag de vídeo.
+                 <source src="/img/video-institucional.mp4" type="video/mp4" />
+                 Seu navegador não suporta a tag de vídeo.
               </video>
             </div>
           </div>
@@ -536,6 +536,12 @@ const Partners = () => {
     '/img/Prevent Senior.png', '/img/Suhai.png', '/img/SulAmérica.png', '/img/Tokio.png', '/img/Yelum.png'
   ];
 
+  // Função para pegar o nome da seguradora a partir do caminho da imagem (ex: /img/Amil.png -> Amil)
+  const getAltName = (path) => {
+    const name = path.split('/').pop().replace('.png', '');
+    return `Logo da Seguradora ${name.charAt(0).toUpperCase() + name.slice(1)}`;
+  };
+
   return (
     <div className="py-8 bg-white overflow-hidden border-t border-gray-100">
         <div className="text-center mb-8">
@@ -545,12 +551,12 @@ const Partners = () => {
            <div className="scroller-inner flex gap-16 w-max animate-scroll">
               {partners.map((p, i) => (
                 <div key={`p1-${i}`} className="h-14 w-auto grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all duration-500 transform hover:scale-110 cursor-pointer">
-                  <img src={p} alt="Seguradora" className="h-full w-auto object-contain" />
+                  <img src={p} alt={getAltName(p)} className="h-full w-auto object-contain" />
                 </div>
               ))}
               {partners.map((p, i) => (
                 <div key={`p2-${i}`} className="h-14 w-auto grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all duration-500 transform hover:scale-110 cursor-pointer">
-                  <img src={p} alt="Seguradora" className="h-full w-auto object-contain" />
+                  <img src={p} alt={getAltName(p)} className="h-full w-auto object-contain" />
                 </div>
               ))}
            </div>
@@ -578,7 +584,7 @@ const Frizzolandia = () => {
 
       <div className="container mx-auto px-6 mb-12 relative z-10">
         <div className="text-center">
-          <h2 className="text-3xl md:text-6xl font-extrabold text-white mb-6">Bem vindo a Frizzolândia</h2>
+          <h2 className="text-3xl md:text-6xl font-extrabold text-white mb-6">Bem vindo à Frizzolândia</h2>
           <p className="text-white/80 mt-4 max-w-4xl mx-auto text-xl leading-relaxed font-light">
             Um ecossistema exclusivo para quem concentra mais de um seguro com a Frizzo. <br className="hidden md:block"/> Segurança, benefícios e um relacionamento que cresce com você.
           </p>
@@ -692,7 +698,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contato" className="py-12 lg:py-28 overflow-hidden bg-gray-50">
+    <section id="contato" className="pt-12 pb-8 lg:pt-28 lg:pb-12 overflow-hidden bg-gray-50">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-5xl font-extrabold text-[#193c5c]">Entre em Contato</h2>
@@ -791,13 +797,165 @@ const Contact = () => {
                 </div>
 
                 <div className="text-center pt-4">
-                   <button type="submit" className="w-full bg-[#193c5c] text-white font-bold py-4 px-8 rounded-lg hover:bg-[#13acd3] transition-all transform hover:scale-[1.02] shadow-lg">
-                     Solicitar Cotação
+                   <button type="submit" className="w-full flex items-center justify-center gap-2 bg-[#193c5c] text-white font-bold py-4 px-8 rounded-lg hover:bg-[#13acd3] transition-all transform hover:scale-[1.02] shadow-lg">
+                     <img src="/img/wpp.png" alt="WhatsApp" className="w-5 h-5 filter brightness-0 invert" />
+                     Solicitar Cotação pelo WhatsApp
                    </button>
                 </div>
              </form>
           </div>
         </div>
+      </div>
+    </section>
+  );
+};
+
+const Testimonials = () => {
+  const testimonials = [
+    {
+      quote: "Hoje posso dizer com tranquilidade: é uma equipe em que se pode confiar de olhos fechados. Já cuidavam do seguro do meu carro e agora também me ajudaram com a troca do plano de saúde com maestria.",
+      name: "Tatiane Paula"
+    },
+    {
+      quote: "Foi uma experiência satisfatória gostei muito e super indico é  com ffrizzo seguros as coisas se torna bem mais simples...",
+      name: "Joelson Santos"
+    },
+    {
+      quote: "Não daria somente 5 estrelas, mas Mil se fosse possível… a Frizzo cuida de tudo pra mim, seguro auto, seguro saúde… minimamente a uns 10 anos! Todos muito prestativos sempre, sempre dispostos a ajudar e dar o melhor! Obrigada de coração a todos… Silvana, André e Júlia... e toda equipe!",
+      name: "Aline do Amaral"
+    },
+    {
+      quote: "Todas as vezes que preciso de alguma informação, esclarecimento ou suporte a Sinistro estão sempre me apoiando e retomando rápido. Na renovação estão sempre pesquisando e me lembrando que chegou a data da renovação. Gosto muito do trabalho deles e do profissionalismo da equipe.",
+      name: "Sirlene Iara"
+    },
+    {
+      quote: "Atende todas as expectativas, explicam e esclarecem todas as dúvidas possíveis. Estou indo para o 3° ano sendo cliente.",
+      name: "Renan Valentim"
+    },
+    {
+      quote: "Qualidade espetacular, seus serviços e pela seleção e treinamento de seus profissionais.",
+      name: "Angela Silva"
+    },
+    {
+      quote: "Atendimento impecável do Andre Frizzo! Estou extremamente grato e satisfeito com o produto que adquiri. O Andre não se preocupou em somente vender, mas sim me explicar exatamente os motivos pelos quais, me passou algumas dicas, falou sobre cada tipo de seguro e entendeu junto a mim qual seria o ideal!",
+      name: "Eduardo Torreçilha"
+    },
+    {
+      quote: "Excelente! Tenho seguro com eles há mais de 20 anos e sempre com atendimento personalizado e eficaz. Super indico!",
+      name: "Ana Paula"
+    },
+    {
+      quote: "Com certeza um dos melhores atendimentos e atenção que já recebi.",
+      name: "Leonardo Paiva"
+    }
+  ];
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Define quantos cartões aparecem por vez dependendo da tela (Celular = 1, Tablet = 2, PC = 3)
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setItemsPerPage(3);
+      else if (window.innerWidth >= 768) setItemsPerPage(2);
+      else setItemsPerPage(1);
+    };
+    handleResize(); // Configura no carregamento
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const totalPages = Math.ceil(testimonials.length / itemsPerPage);
+
+  // Troca automática de página a cada 10 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNext();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [itemsPerPage, totalPages]);
+
+  const handleNext = () => {
+    if (isAnimating) return; // Evita bugar se clicar rápido demais
+    setIsAnimating(true);
+    
+    // Inicia a animação de sumir, aguarda 400ms, troca os dados e deixa aparecer de novo
+    setTimeout(() => {
+      setPageIndex((prev) => (prev + 1) % totalPages);
+      setIsAnimating(false);
+    }, 400); 
+  };
+
+  // Permite clicar nos pontinhos para navegar
+  const handleDotClick = (index) => {
+    if (isAnimating || index === pageIndex) return;
+    setIsAnimating(true);
+    setTimeout(() => {
+      setPageIndex(index);
+      setIsAnimating(false);
+    }, 400);
+  };
+
+  // Separa apenas os itens que devem aparecer na página atual
+  const startIndex = pageIndex * itemsPerPage;
+  const currentItems = Array.from({ length: itemsPerPage }).map((_, i) => {
+    return testimonials[(startIndex + i) % testimonials.length];
+  });
+
+  return (
+    <section id="depoimentos" className="pt-8 pb-4 lg:pt-12 lg:pb-6 bg-white relative overflow-hidden border-b border-gray-100">
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gray-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none opacity-50"></div>
+      
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-12">
+          <span className="text-[#13acd3] font-bold uppercase tracking-wider text-sm mb-2 block">Prova Social</span>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-[#193c5c]">O que dizem nossos clientes</h2>
+          <div className="w-24 h-1 bg-[#13acd3] mx-auto mt-4 rounded-full"></div>
+        </div>
+
+        {/* Grid com Animação de Transição Cinematográfica */}
+        <div className="relative">
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-500 ease-in-out transform ${isAnimating ? 'opacity-0 scale-95 translate-y-4' : 'opacity-100 scale-100 translate-y-0'}`}>
+            {currentItems.map((item, index) => (
+              <div 
+                key={index} 
+                className="h-[400px] lg:h-[360px] bg-[#193c5c] rounded-3xl p-6 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#13acd3]/20 flex flex-col justify-between relative group"
+              >
+                {/* Efeito de brilho no hover do cartão */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#13acd3]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
+                
+                <div className="relative z-10">
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={20} className="text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                  <p className="text-white/90 italic leading-relaxed mb-8 text-sm md:text-base font-light">
+                    "{item.quote}"
+                  </p>
+                </div>
+                
+                <div className="relative z-10 pt-5 border-t border-white/10">
+                  <h4 className="font-bold text-white text-lg leading-none">{item.name}</h4>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Navegação por Pontos (Dots) */}
+        <div className="flex justify-center mt-8 gap-3 pb-2">
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => handleDotClick(i)}
+              className={`h-2.5 rounded-full transition-all duration-500 ease-in-out ${pageIndex === i ? 'w-10 bg-[#13acd3]' : 'w-2.5 bg-gray-300 hover:bg-[#193c5c]/50'}`}
+              aria-label={`Ir para a página ${i + 1}`}
+            />
+          ))}
+        </div>
+
       </div>
     </section>
   );
@@ -915,7 +1073,7 @@ const Socials = () => {
   }, []);
 
   return (
-    <section id="frizzolandia" className="pt-10 pb-20 lg:pt-12 lg:pb-24 bg-[#193c5c] overflow-hidden">
+    <section id="frizzolandia" className="pt-6 pb-20 lg:pt-8 lg:pb-24 bg-[#193c5c] overflow-hidden">
        <div className="container mx-auto px-6">
          <div className="text-center mt-12 mb-16">
              <h2 className="text-3xl md:text-5xl font-bold text-white">Conecte-se Conosco</h2>
@@ -967,7 +1125,10 @@ const Socials = () => {
 const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
   <footer className="bg-white border-t border-gray-200">
      <div className="container mx-auto py-8 px-6 flex flex-wrap justify-between items-center text-sm text-gray-600">
-        <div className="w-full md:w-auto text-center md:text-left mb-4 md:mb-0 font-medium">&copy; 2026 Frizzo Corretora de Seguros.</div>
+        <div className="w-full md:w-auto text-center md:text-left mb-4 md:mb-0">
+           <span className="font-medium text-[#193c5c] block md:inline">&copy; 2026 Frizzo Corretora de Seguros.</span>
+           <span className="block text-xs text-gray-400 mt-1 md:mt-2">Registro SUSEP: [Insira seu número SUSEP aqui]</span>
+        </div>
         <div className="w-full md:w-auto flex justify-center space-x-8 mb-4 md:mb-0">
            <button onClick={onOpenPrivacy} className="hover:text-[#13acd3] transition-colors focus:outline-none">Política de Privacidade</button>
            <button onClick={onOpenTerms} className="hover:text-[#13acd3] transition-colors focus:outline-none">Termos de Uso</button>
@@ -987,6 +1148,34 @@ const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
   </footer>
 );
 
+// --- Inicialização Inteligente do Google Analytics ---
+const initGoogleAnalytics = () => {
+  if (typeof window === 'undefined') return;
+  
+  // Evita carregar o script duplicado caso a pessoa clique duas vezes
+  if (document.getElementById('ga-script')) return;
+
+  // Cria e injeta o script externo do GTAG
+  const script1 = document.createElement('script');
+  script1.id = 'ga-script';
+  script1.async = true;
+  script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-0GE33YYLNN';
+  document.head.appendChild(script1);
+
+  // Cria e injeta o script de configuração com a sua ID
+  const script2 = document.createElement('script');
+  script2.id = 'ga-inline-script';
+  script2.innerHTML = `
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-0GE33YYLNN');
+  `;
+  document.head.appendChild(script2);
+  
+  console.log('Google Analytics (G-0GE33YYLNN) inicializado com sucesso via consentimento!');
+};
+
 const CookieBanner = ({ onOpenPrivacy }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -995,6 +1184,9 @@ const CookieBanner = ({ onOpenPrivacy }) => {
       const consent = localStorage.getItem('cookieConsent');
       if (!consent) {
         setIsVisible(true);
+      } else if (consent === 'true') {
+        // Se o usuário já havia aceitado em uma visita anterior, inicia o Analytics logo de cara
+        initGoogleAnalytics();
       }
     } catch (error) {
       console.warn('Acesso ao localStorage bloqueado pelo ambiente de preview.');
@@ -1005,6 +1197,8 @@ const CookieBanner = ({ onOpenPrivacy }) => {
   const acceptCookies = () => {
     try {
       localStorage.setItem('cookieConsent', 'true');
+      // Dispara o Google Analytics no exato momento em que ele clica em "Aceitar"
+      initGoogleAnalytics(); 
     } catch (error) {
       console.warn('Não foi possível salvar no localStorage neste ambiente.');
     }
@@ -1119,7 +1313,7 @@ export default function App() {
 
         /* Exceção para imagens que precisam de clique (como as logos das seguradoras) */
         .cursor-pointer img {
-          pointer-events: auto;
+          -pointer-events: auto;
         }
 
         @keyframes scroll {
@@ -1184,6 +1378,15 @@ export default function App() {
           mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
           -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
+        
+        /* Oculta a barra de rolagem do carrossel mas mantém a funcionalidade */
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
       
       <Header />
@@ -1192,6 +1395,7 @@ export default function App() {
       <Partners />
       <Frizzolandia />
       <Contact />
+      <Testimonials />
       <Socials />
       <Footer 
         onOpenPrivacy={() => setActiveModal('privacy')} 
@@ -1220,11 +1424,15 @@ export default function App() {
         href="https://wa.me/5511973039860"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-green-600 text-white w-14 h-14 lg:w-auto lg:px-5 lg:py-3 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 z-[60] hover:scale-110"
+        className="group fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-green-600 text-white w-14 h-14 hover:w-[170px] rounded-full flex items-center shadow-lg transition-all duration-300 ease-in-out z-[60] overflow-hidden"
         style={{ animation: 'pulse-whatsapp 2s infinite' }}
       >
-        <img src="/img/wpp.png" alt="WhatsApp" className="w-8 h-8 lg:w-6 lg:h-6 lg:mr-2 filter brightness-0 invert" />
-        <span className="hidden lg:inline font-bold text-sm tracking-wide">Fale Conosco</span>
+        <div className="flex items-center justify-center min-w-[3.5rem] h-full">
+          <img src="/img/wpp.png" alt="WhatsApp" className="w-8 h-8 filter brightness-0 invert transform transition-transform group-hover:scale-110" />
+        </div>
+        <span className="font-bold text-sm tracking-wide whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-4">
+          Fale Conosco
+        </span>
       </a>
     </div>
   );
