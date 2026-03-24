@@ -3,7 +3,7 @@ import {
   Menu, X, Instagram, Facebook, Linkedin, 
   Heart, KeyRound, CarFront, Activity, Building2, 
   Home, Smartphone, Plane, MapPin, Clock, Phone, 
-  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Pause, Shield, Info
+  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Pause, Shield, Info, Maximize, Layers
 } from 'lucide-react';
 
 // --- Textos Legais ---
@@ -12,8 +12,8 @@ const privacyPolicyContent = (
     <p>A <strong>Frizzo Corretora de Seguros</strong> valoriza a sua privacidade e está comprometida em proteger os seus dados pessoais. Esta Política de Privacidade explica como recolhemos, usamos e partilhamos informações quando utiliza o nosso site.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">1. Dados que Recolhemos</h4>
     <p>Recolhemos dados pessoais que nos fornece voluntariamente através dos nossos formulários de contacto e cotação, tais como: nome completo, endereço de e-mail, número de telefone (WhatsApp) e tipo de seguro desejado.</p>
-    <h4 className="font-bold text-gray-800 text-base mt-4">2. Como Usamos os Seus Dados</h4>
-    <p>Os dados recolhidos são utilizados exclusivamente para: processar e responder aos seus pedidos de cotação; comunicar consigo sobre produtos e serviços; melhorar a experiência de navegação no nosso site; e para fins de remarketing e análises estatísticas, sempre em conformidade com a Lei Geral de Proteção de Dados (LGPD).</p>
+    <h4 className="font-bold text-gray-800 text-base mt-4">2. Como Usamos Os Seus Dados</h4>
+    <p>Os dados recolhidos são utilizados exclusivamente para: processar e responder aos seus pedidos de cotação; comunicar consigo sobre produtos e serviços; melhorar a experiêcia de navegação no nosso site; e para fins de remarketing e análises estatísticas, sempre em conformidade com a Lei Geral de Proteção de Dados (LGPD).</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">3. Partilha de Dados</h4>
     <p>As suas informações podem ser partilhadas estritamente com as nossas seguradoras parceiras (ex: SulAmérica, Porto Seguro, Amil, Allianz, etc.) com o único propósito de gerar as cotações solicitadas. Não vendemos nem alugamos os seus dados a terceiros.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">4. Direitos do Titular (LGPD)</h4>
@@ -37,7 +37,6 @@ const termsOfUseContent = (
 
 // --- Funções Auxiliares ---
 
-// Função para gerar e baixar o vCard (Contato)
 const downloadVCard = () => {
   const contact = {
     name: "Frizzo Corretora de Seguros",
@@ -102,7 +101,6 @@ const Header = () => {
     };
   }, []);
 
-  // Bloqueia o scroll da página quando o menu mobile está aberto
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -165,13 +163,11 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Overlay Escuro do Menu Mobile */}
       <div 
         className={`md:hidden fixed inset-0 bg-[#193c5c]/60 backdrop-blur-md z-40 transition-all duration-500 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
         onClick={() => setIsOpen(false)}
       ></div>
 
-      {/* Sidebar Elegante do Menu Mobile */}
       <div className={`md:hidden fixed top-0 left-0 h-[100dvh] w-[70%] max-w-[260px] bg-white shadow-2xl z-50 transform transition-all duration-500 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <img src="/img/logo-header.png" alt="Frizzo" className="h-8 w-auto" onError={(e) => {e.target.style.display='none'}} />
@@ -213,6 +209,11 @@ const Header = () => {
 const Hero = () => {
   const [activeTab, setActiveTab] = useState('saude');
   const [videoModalOpen, setVideoModalOpen] = useState(false);
+
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const hideTimerRef = useRef(null);
   
   const handleTabChange = (tab) => {
     if (tab === activeTab) return;
@@ -234,6 +235,53 @@ const Hero = () => {
 
     return () => clearInterval(interval);
   }, [activeTab, videoModalOpen]);
+
+  const handleTogglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.pause();
+      setIsPlaying(false);
+      setShowOverlay(true);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    } else {
+      video.play().catch(error => console.warn("Autoplay blocked:", error));
+      setIsPlaying(true);
+      startHideTimer();
+    }
+  };
+
+  const handleOpenFullscreen = (e) => {
+    e.stopPropagation();
+    if (isPlaying && videoRef.current) {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+    setVideoModalOpen(true);
+  };
+
+  const startHideTimer = () => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    setShowOverlay(true);
+    hideTimerRef.current = setTimeout(() => {
+      setShowOverlay(false);
+    }, 1500);
+  };
+
+  const handleMouseMove = () => {
+    if (isPlaying) startHideTimer();
+  };
+
+  const handleMouseLeave = () => {
+    if (isPlaying) setShowOverlay(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, []);
 
   const content = {
     saude: {
@@ -271,7 +319,6 @@ const Hero = () => {
   return (
     <section id="inicio" className="relative w-full min-h-screen flex flex-col justify-center p-4 pt-20 lg:pt-0 bg-[#193c5c] overflow-hidden">
       
-      {/* Background Animado */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className={`absolute w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl transition-all duration-1000 ease-in-out
           ${activeTab === 'saude' ? '-top-20 -left-20 scale-100' : activeTab === 'consorcio' ? 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-110' : 'bottom-0 right-0 scale-90'}
@@ -283,10 +330,8 @@ const Hero = () => {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col h-full justify-center flex-grow">
         
-        {/* Ajustado o gap mobile para 4 para aproximar o texto do logo */}
         <div className="grid lg:grid-cols-2 gap-4 lg:gap-16 items-center flex-grow">
           
-          {/* Content Side */}
           <div className="text-center lg:text-left w-full flex flex-col justify-center order-2 lg:order-1 pb-12 lg:pb-0">
              <div key={activeTab}>
                 <h1 
@@ -302,7 +347,6 @@ const Hero = () => {
                   {currentContent.text}
                 </p>
                 
-                {/* Botões de Ação */}
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-blurIn" style={{ animationDelay: '300ms' }}>
                   <a 
                     href={`https://wa.me/5511973039860?text=${encodeURIComponent(currentContent.wppText)}`}
@@ -314,7 +358,6 @@ const Hero = () => {
                     <div className="absolute -inset-3 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 blur-lg"></div>
                   </a>
 
-                  {/* Botão de Vídeo Mobile */}
                   <button 
                     onClick={() => setVideoModalOpen(true)}
                     className="lg:hidden w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 font-semibold text-white/90 border border-white/30 rounded-full hover:bg-white/10 transition-all active:scale-95"
@@ -326,18 +369,14 @@ const Hero = () => {
              </div>
           </div>
 
-          {/* Visual Side */}
           <div className="relative w-full flex flex-col justify-center items-center perspective-1000 order-1 lg:order-2 mb-0 lg:mb-0">
             
-            {/* CARDS FLUTUANTES SOBRE O VÍDEO (Logo visível no mobile, Stats escondidos) */}
             <div className="flex w-full max-w-xl flex-col items-center mb-0 lg:mb-2 z-20">
                  
-                 {/* CARD DA LOGO */}
                  <div className="w-[70%] sm:w-[50%] bg-white/10 backdrop-blur-md rounded-2xl py-2 px-4 border border-white/10 flex items-center justify-center shadow-xl transform transition-transform hover:scale-105 mb-2">
                     <img src="/img/logo-hero.png" alt="Frizzo Seguros" className="h-16 w-auto object-contain" />
                  </div>
 
-                 {/* Linha dos Cards de Estatísticas (Escondida no Mobile) */}
                  <div className="hidden lg:flex gap-4 w-full">
                     <div className="flex-1 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 text-white flex items-center gap-4 shadow-xl transform transition-transform hover:scale-105">
                         <div className={`bg-gradient-to-r ${currentContent.color} w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300`}>
@@ -360,26 +399,48 @@ const Hero = () => {
                  </div>
             </div>
 
-            {/* Glow de fundo */}
             <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r ${currentContent.color} opacity-20 blur-[80px] rounded-full transition-all duration-700`}></div>
 
-            {/* Video Container (Escondido no Mobile, mostrado apenas no Desktop) */}
             <div className="hidden lg:block relative z-10 w-full max-w-xl bg-white/10 backdrop-blur-xl p-3 rounded-[2rem] border border-white/20 shadow-2xl overflow-hidden group transform transition-all hover:scale-[1.01] hover:border-white/30">
-              <div className="aspect-video rounded-[1.5rem] overflow-hidden bg-gray-900 flex items-center justify-center relative animate-zoomIn">
-                 <div className="absolute inset-0 bg-gradient-to-t from-[#193c5c]/60 to-transparent z-10 pointer-events-none"></div>
-                 <video className="w-full h-full object-cover" controls playsInline poster="/img/logo.png">
-                    <source src="/img/video-institucional.mp4" type="video/mp4" />
+              <div 
+                className="aspect-video rounded-[1.5rem] overflow-hidden bg-gray-900 flex items-center justify-center relative animate-zoomIn cursor-pointer"
+                onClick={handleTogglePlay}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              >
+                 <video 
+                   ref={videoRef}
+                   className="w-full h-full object-cover" 
+                   playsInline 
+                   poster="/img/Frizzo Corretora de Seguros.png"
+                   loop
+                 >
+                    <source src="/img/VideoFrizzo.mp4" type="video/mp4" />
                     Seu navegador não suporta a tag de vídeo.
                  </video>
+                 
+                 <div className={`absolute top-4 right-4 z-30 transition-opacity duration-500 ${showOverlay ? 'opacity-100' : 'opacity-0'}`}>
+                    <button 
+                      onClick={handleOpenFullscreen}
+                      className="p-2 bg-black/40 backdrop-blur-md text-white rounded-full hover:bg-black/60 transition-colors shadow-lg border border-white/20"
+                      title="Tela Cheia"
+                    >
+                      <Maximize size={18} />
+                    </button>
+                 </div>
+
+                 <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 z-10 pointer-events-none ${showOverlay ? 'opacity-100' : 'opacity-0'}`}>
+                    <div className="bg-black/50 backdrop-blur-md p-4 rounded-full text-white shadow-xl border border-white/20 transform transition-transform duration-300 group-hover:scale-110">
+                       {isPlaying ? <Pause fill="currentColor" size={28} /> : <Play fill="currentColor" size={28} className="ml-1" />}
+                    </div>
+                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Hotbar Mobile (Ajustada e Centralizada) */}
         <div className="flex justify-center lg:hidden relative z-30 pb-6 w-full">
             <div className="relative bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-full flex items-center justify-between w-full max-w-sm shadow-2xl">
-                {/* Background Slider */}
                 <div 
                   className="absolute top-2 h-[calc(100%-1rem)] bg-white rounded-full transition-all duration-300 ease-out shadow-sm"
                   style={{ 
@@ -413,7 +474,6 @@ const Hero = () => {
             </div>
         </div>
 
-        {/* Hotbar Desktop */}
         <div className="absolute bottom-10 left-0 right-0 hidden lg:flex justify-center z-30">
            <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 p-2 rounded-full flex items-center gap-3 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] animate-float">
              
@@ -461,19 +521,24 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Video Modal Mobile */}
       {videoModalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fadeIn" onClick={() => setVideoModalOpen(false)}>
-          <div className="relative w-full max-w-lg bg-black rounded-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-8 animate-fadeIn" onClick={() => setVideoModalOpen(false)}>
+          <div className="relative w-full max-w-5xl bg-white/10 backdrop-blur-xl p-3 md:p-4 rounded-[2rem] border border-white/20 shadow-2xl overflow-hidden animate-zoomIn" onClick={e => e.stopPropagation()}>
             <button 
               onClick={() => setVideoModalOpen(false)}
-              className="absolute top-2 right-2 z-10 p-2 bg-black/50 text-white rounded-full hover:bg-black/70"
+              className="absolute top-6 right-6 z-20 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 border border-white/20 transition-colors shadow-lg"
             >
-              <X size={20} />
+              <X size={24} />
             </button>
-            <div className="aspect-video">
-              <video className="w-full h-full object-cover" controls playsInline autoPlay>
-                 <source src="/img/video-institucional.mp4" type="video/mp4" />
+            <div className="aspect-video rounded-[1.5rem] overflow-hidden bg-gray-900 relative">
+              <video 
+                className="w-full h-full object-cover" 
+                controls 
+                playsInline 
+                autoPlay
+                poster="/img/Frizzo Corretora de Seguros.png"
+              >
+                 <source src="/img/VideoFrizzo.mp4" type="video/mp4" />
                  Seu navegador não suporta a tag de vídeo.
               </video>
             </div>
@@ -536,7 +601,6 @@ const Partners = () => {
     '/img/Prevent Senior.png', '/img/Suhai.png', '/img/SulAmérica.png', '/img/Tokio.png', '/img/Yelum.png'
   ];
 
-  // Função para pegar o nome da seguradora a partir do caminho da imagem (ex: /img/Amil.png -> Amil)
   const getAltName = (path) => {
     const name = path.split('/').pop().replace('.png', '');
     return `Logo da Seguradora ${name.charAt(0).toUpperCase() + name.slice(1)}`;
@@ -594,7 +658,6 @@ const Frizzolandia = () => {
       <div className="container mx-auto flex flex-col items-center px-4 sm:px-6 relative z-10">
         <div className="w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-6 lg:p-16 flex flex-col justify-center transform transition-all hover:border-white/20">
           
-          {/* Mobile Layout: Logo Top + Grid 2x2 */}
           <div className="lg:hidden flex flex-col items-center w-full">
               <div className="mb-8 relative w-40 h-40">
                  <img src="/img/logo.png" className="w-full h-full object-contain" alt="Logo Frizzo" />
@@ -609,10 +672,8 @@ const Frizzolandia = () => {
               </div>
           </div>
 
-          {/* Desktop Layout: Split Columns */}
           <div className="hidden lg:flex w-full flex-row items-center justify-center gap-0">
             
-            {/* Left Column */}
             <div className="w-2/5 space-y-8 pr-12 order-1">
                 <div 
                   onMouseEnter={() => handleHover(1)} onMouseLeave={handleLeave}
@@ -630,25 +691,23 @@ const Frizzolandia = () => {
                 </div>
             </div>
 
-            {/* Center Logo Split */}
             <div className="w-auto flex justify-center order-2">
                 <div className="relative w-80 h-80 grid grid-cols-2 grid-rows-2 gap-0 transition-transform duration-700">
                   <div onMouseEnter={() => handleHover(1)} onMouseLeave={handleLeave} className={`overflow-hidden relative transition-transform duration-500 z-10 ${highlightedId === 1 ? 'scale-105 -translate-x-2 -translate-y-2' : ''}`}>
-                    <img src="/img/logo.png" className="absolute top-0 left-0 w-[200%] h-[200%] max-w-none object-cover" />
+                    <img src="/img/logo.png" className="absolute top-0 left-0 w-[200%] h-[200%] max-w-none object-cover" alt="Logo Frizzo Pt 1" />
                   </div>
                   <div onMouseEnter={() => handleHover(3)} onMouseLeave={handleLeave} className={`overflow-hidden relative transition-transform duration-500 z-10 ${highlightedId === 3 ? 'scale-105 translate-x-2 -translate-y-2' : ''}`}>
-                    <img src="/img/logo.png" className="absolute top-0 -left-full w-[200%] h-[200%] max-w-none object-cover" />
+                    <img src="/img/logo.png" className="absolute top-0 -left-full w-[200%] h-[200%] max-w-none object-cover" alt="Logo Frizzo Pt 2" />
                   </div>
                   <div onMouseEnter={() => handleHover(2)} onMouseLeave={handleLeave} className={`overflow-hidden relative transition-transform duration-500 z-10 ${highlightedId === 2 ? 'scale-105 -translate-x-2 translate-y-2' : ''}`}>
-                    <img src="/img/logo.png" className="absolute -top-full left-0 w-[200%] h-[200%] max-w-none object-cover" />
+                    <img src="/img/logo.png" className="absolute -top-full left-0 w-[200%] h-[200%] max-w-none object-cover" alt="Logo Frizzo Pt 3" />
                   </div>
                   <div onMouseEnter={() => handleHover(4)} onMouseLeave={handleLeave} className={`overflow-hidden relative transition-transform duration-500 z-10 ${highlightedId === 4 ? 'scale-105 translate-x-2 translate-y-2' : ''}`}>
-                    <img src="/img/logo.png" className="absolute -top-full -left-full w-[200%] h-[200%] max-w-none object-cover" />
+                    <img src="/img/logo.png" className="absolute -top-full -left-full w-[200%] h-[200%] max-w-none object-cover" alt="Logo Frizzo Pt 4" />
                   </div>
                 </div>
             </div>
 
-            {/* Right Column */}
             <div className="w-2/5 space-y-8 pl-12 order-3">
                 <div 
                   onMouseEnter={() => handleHover(3)} onMouseLeave={handleLeave}
@@ -685,12 +744,8 @@ const Frizzolandia = () => {
 };
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', type: '', message: ''
-  });
-
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', type: '', message: '' });
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const text = `Olá! Gostaria de solicitar uma cotação.\n\n*Nome:* ${formData.name}\n*E-mail:* ${formData.email}\n*Telefone:* ${formData.phone}\n*Tipo de Seguro:* ${formData.type}\n\n*Mensagem:*\n${formData.message}`;
@@ -704,78 +759,55 @@ const Contact = () => {
           <h2 className="text-3xl md:text-5xl font-extrabold text-[#193c5c]">Entre em Contato</h2>
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-lg">Tire suas dúvidas ou solicite sua cotação online gratuita.</p>
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
-          {/* Info Side */}
           <div className="lg:col-span-3 flex flex-col space-y-8 p-8 rounded-3xl shadow-2xl bg-[#193c5c] h-full text-white relative overflow-hidden">
              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-
              <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-xl bg-gray-900 border border-white/10 relative z-10">
                <iframe title="Localização" className="w-full h-full border-0 opacity-90 hover:opacity-100 transition-opacity" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3656.7149289588315!2d-46.74414042372487!3d-23.578679778787873!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5434d3b729bd%3A0x22dc1a58d07f0ec0!2sFfrizzo%20Seguros!5e0!3m2!1spt-BR!2sbr!4v1764617321726!5m2!1spt-BR!2sbr" allowFullScreen loading="lazy"></iframe>
              </div>
-             
-             {/* Grid de Informações com layout de 2 colunas no mobile */}
              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 relative z-10">
-                <a href="https://www.google.com/maps/place/Ffrizzo+Seguros/@-23.5786798,-46.7441404,17z/data=!4m18!1m9!3m8!1s0x94ce5434d3b729bd:0x22dc1a58d07f0ec0!2sFfrizzo+Seguros!8m2!3d-23.5786798!4d-46.7415655!9m1!1b1!16s%2Fg%2F11bzwxmpml!3m7!1s0x94ce5434d3b729bd:0x22dc1a58d07f0ec0!8m2!3d-23.5786798!4d-46.7415655!9m1!1b1!16s%2Fg%2F11bzwxmpml?entry=ttu&g_ep=EgoyMDI1MTEyMy4xIKXMDSoASAFQAw%3D%3D" target="_blank" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
-                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <MapPin className="w-5 h-5 md:w-6 md:h-6" />
-                  </div>
+                <a href="https://www.google.com/maps/place/Ffrizzo+Seguros/@-23.5786798,-46.7441404,17z" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
+                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><MapPin className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">Endereço</h4><p className="text-[10px] md:text-sm text-white/80">Rua Moacir Miguel 91</p></div>
                 </a>
                 <div className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
-                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <Clock className="w-5 h-5 md:w-6 md:h-6" />
-                  </div>
+                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><Clock className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">Horário</h4><p className="text-[10px] md:text-sm text-white/80">Seg a Sex, 8h às 17h</p></div>
                 </div>
                 <button onClick={downloadVCard} className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
-                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <UserPlus className="w-5 h-5 md:w-6 md:h-6" />
-                  </div>
+                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><UserPlus className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">Contato</h4><p className="text-[10px] md:text-sm text-white/80">Salvar na Agenda</p></div>
                 </button>
                 <a href="mailto:administrativo@frizzoseguros.com.br" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
-                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <Mail className="w-5 h-5 md:w-6 md:h-6" />
-                  </div>
+                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><Mail className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">E-mail</h4><p className="text-[10px] md:text-sm text-white/80 break-all">Envie um E-mail</p></div>
                 </a>
-                <a href="https://wa.me/5511973039860" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
-                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
-                  </div>
+                <a href="https://wa.me/5511973039860" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
+                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><MessageCircle className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">WhatsApp</h4><p className="text-[10px] md:text-sm text-white/80">Fale Conosco!</p></div>
                 </a>
-                <a href="https://www.google.com/maps/place/FFrizzo+Seguros/@-23.5786798,-46.7441404,17z/data=!4m18!1m9!3m8!1s0x94ce5434d3b729bd:0x22dc1a58d07f0ec0!2sFFrizzo+Seguros!8m2!3d-23.5786798!4d-46.7415655!9m1!1b1!16s%2Fg%2F11bzwxmpml!3m7!1s0x94ce5434d3b729bd:0x22dc1a58d07f0ec0!8m2!3d-23.5786798!4d-46.7415655!9m1!1b1!16s%2Fg%2F11bzwxmpml?entry=ttu&g_ep=EgoyMDI2MDEyOC4wIKXMDSoKLDEwMDc5MjA2OUgBUAM%3D" target="_blank" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
-                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]">
-                    <Star className="w-5 h-5 md:w-6 md:h-6" />
-                  </div>
+                <a href="https://www.google.com/maps/place/FFrizzo+Seguros/@-23.5786798,-46.7441404,17z" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
+                  <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><Star className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">Avalie-nos</h4><p className="text-[10px] md:text-sm text-white/80">Sua Opinião</p></div>
                 </a>
              </div>
           </div>
-
-          {/* Form Side */}
           <div className="lg:col-span-2 p-8 sm:p-10 rounded-3xl shadow-2xl bg-white h-full text-gray-800 border border-gray-100">
              <h2 className="text-3xl font-bold text-center mb-8 text-[#193c5c]">Cotação Online</h2>
              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Container de Grid para o Formulário no Mobile */}
                 <div className="grid grid-cols-2 gap-x-4 gap-y-5">
                    <div className="col-span-2">
                       <label className="block text-sm font-bold mb-2 text-gray-600">Seu nome completo</label>
                       <input required name="name" value={formData.name} onChange={handleChange} type="text" placeholder="Nome Completo" className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all" />
                    </div>
-                   
                    <div className="col-span-1 md:col-span-1">
                       <label className="block text-sm font-bold mb-2 text-gray-600">E-mail</label>
                       <input required name="email" value={formData.email} onChange={handleChange} type="email" placeholder="seu@email.com" className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all" />
                    </div>
-                   
                    <div className="col-span-1 md:col-span-1">
                       <label className="block text-sm font-bold mb-2 text-gray-600">WhatsApp</label>
                       <input required name="phone" value={formData.phone} onChange={handleChange} type="tel" placeholder="(11) 99999-9999" className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all" />
                    </div>
-
                    <div className="col-span-2">
                       <label className="block text-sm font-bold mb-2 text-gray-600">Tipo de Seguro</label>
                       <select required name="type" value={formData.type} onChange={handleChange} className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all">
@@ -789,13 +821,11 @@ const Contact = () => {
                          <option value="viagem">Viagem</option>
                       </select>
                    </div>
-                   
                    <div className="col-span-2">
                       <label className="block text-sm font-bold mb-2 text-gray-600">Mensagem</label>
                       <textarea required name="message" value={formData.message} onChange={handleChange} rows="4" placeholder="Descreva sua necessidade..." className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#01cbfe] focus:ring-2 focus:ring-[#01cbfe]/20 outline-none transition-all resize-none"></textarea>
                    </div>
                 </div>
-
                 <div className="text-center pt-4">
                    <button type="submit" className="w-full flex items-center justify-center gap-2 bg-[#193c5c] text-white font-bold py-4 px-8 rounded-lg hover:bg-[#13acd3] transition-all transform hover:scale-[1.02] shadow-lg">
                      <img src="/img/wpp.png" alt="WhatsApp" className="w-5 h-5 filter brightness-0 invert" />
@@ -812,70 +842,35 @@ const Contact = () => {
 
 const Testimonials = () => {
   const testimonials = [
-    {
-      quote: "Hoje posso dizer com tranquilidade: é uma equipe em que se pode confiar de olhos fechados. Já cuidavam do seguro do meu carro e agora também me ajudaram com a troca do plano de saúde com maestria.",
-      name: "Tatiane Paula"
-    },
-    {
-      quote: "Foi uma experiência satisfatória gostei muito e super indico é com ffrizzo seguros as coisas se torna bem mais simples...",
-      name: "Joelson Santos"
-    },
-    {
-      quote: "Não daria somente 5 estrelas, mas Mil se fosse possível… a Frizzo cuida de tudo pra mim, seguro auto, seguro saúde… minimamente a uns 10 anos! Todos muito prestativos sempre, sempre dispostos a ajudar e dar o melhor! Obrigada de coração a todos… Silvana, André e Júlia... e toda equipe!",
-      name: "Aline do Amaral"
-    },
-    {
-      quote: "Todas as vezes que preciso de alguma informação, esclarecimento ou suporte a Sinistro estão sempre me apoiando e retomando rápido. Na renovação estão sempre pesquisando e me lembrando que chegou a data da renovação. Gosto muito do trabalho deles e do profissionalismo da equipe.",
-      name: "Sirlene Iara"
-    },
-    {
-      quote: "Atende todas as expectativas, explicam e esclarecem todas as dúvidas possíveis. Estou indo para o 3° ano sendo cliente.",
-      name: "Renan Valentim"
-    },
-    {
-      quote: "Qualidade espetacular, seus serviços e pela seleção e treinamento de seus profissionais.",
-      name: "Angela Silva"
-    },
-    {
-      quote: "Atendimento impecável do Andre Frizzo! Estou extremamente grato e satisfeito com o produto que adquiri. O Andre não se preocupou em somente vender, mas sim me explicar exatamente os motivos pelos quais, me passou algumas dicas, falou sobre cada tipo de seguro e entendeu junto a mim qual seria o ideal!",
-      name: "Eduardo Torreçilha"
-    },
-    {
-      quote: "Excelente! Tenho seguro com eles há mais de 20 anos e sempre com atendimento personalizado e eficaz. Super indico!",
-      name: "Ana Paula"
-    },
-    {
-      quote: "Com certeza um dos melhores atendimentos e atenção que já recebi.",
-      name: "Leonardo Paiva"
-    }
+    { quote: "Hoje posso dizer com tranquilidade: é uma equipe em que se pode confiar de olhos fechados. Já cuidavam do seguro do meu carro e agora também me ajudaram com a troca do plano de saúde com maestria.", name: "Tatiane Paula" },
+    { quote: "Foi uma experiência satisfatória gostei muito e super indico é com ffrizzo seguros as coisas se torna bem mais simples...", name: "Joelson Santos" },
+    { quote: "Não daria somente 5 estrelas, mas Mil se fosse possível… a Frizzo cuida de tudo pra mim, seguro auto, seguro saúde… minimamente a uns 10 anos!", name: "Aline do Amaral" },
+    { quote: "Todas as vezes que preciso de alguma informação, esclarecimento ou suporte a Sinistro estão sempre me apoiando e retomando rápido.", name: "Sirlene Iara" },
+    { quote: "Atende todas as expectativas, explicam e esclarecem todas as dúvidas possíveis.", name: "Renan Valentim" },
+    { quote: "Qualidade espetacular, seus serviços e pela seleção e treinamento de seus profissionais.", name: "Angela Silva" },
+    { quote: "Atendimento impecável do Andre Frizzo! Estou extremamente grato e satisfeito com o produto que adquiri.", name: "Eduardo Torreçilha" },
+    { quote: "Excelente! Tenho seguro com eles há mais de 20 anos e sempre com atendimento personalizado e eficaz.", name: "Ana Paula" },
+    { quote: "Com certeza um dos melhores atendimentos e atenção que já recebi.", name: "Leonardo Paiva" }
   ];
-
   const [pageIndex, setPageIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [isAnimating, setIsAnimating] = useState(false);
-  
-  // Referências para o gesto de arrastar (swipe)
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  // Define quantos cartões aparecem por vez dependendo da tela (Celular = 2, Tablet = 2, PC = 3)
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) setItemsPerPage(3);
       else setItemsPerPage(2);
     };
-    handleResize(); // Configura no carregamento
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const totalPages = Math.ceil(testimonials.length / itemsPerPage);
-
-  // Troca automática de página a cada 10 segundos
   useEffect(() => {
-    const interval = setInterval(() => {
-      handleNext();
-    }, 10000);
+    const interval = setInterval(() => { handleNext(); }, 10000);
     return () => clearInterval(interval);
   }, [itemsPerPage, totalPages]);
 
@@ -887,7 +882,6 @@ const Testimonials = () => {
       setIsAnimating(false);
     }, 400); 
   };
-
   const handlePrev = () => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -896,7 +890,6 @@ const Testimonials = () => {
       setIsAnimating(false);
     }, 400);
   };
-
   const handleDotClick = (index) => {
     if (isAnimating || index === pageIndex) return;
     setIsAnimating(true);
@@ -906,136 +899,72 @@ const Testimonials = () => {
     }, 400);
   };
 
-  // Funções de Arrastar (Swipe) para Celular e Mouse
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchMove = (e) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStartX.current - touchEndX.current > 50) {
-      handleNext(); // Arrasta pra esquerda -> Próximo
-    }
-    if (touchStartX.current - touchEndX.current < -50) {
-      handlePrev(); // Arrasta pra direita -> Anterior
-    }
-  };
-
-  const handleMouseDown = (e) => {
-    touchStartX.current = e.clientX;
-    touchEndX.current = e.clientX;
-  };
-
-  const handleMouseUp = (e) => {
-    touchEndX.current = e.clientX;
-    if (touchStartX.current - touchEndX.current > 50) {
-      handleNext();
-    }
-    if (touchStartX.current - touchEndX.current < -50) {
-      handlePrev();
-    }
-  };
-
-  // Separa apenas os itens que devem aparecer na página atual
-  const startIndex = pageIndex * itemsPerPage;
-  const currentItems = Array.from({ length: itemsPerPage }).map((_, i) => {
-    return testimonials[(startIndex + i) % testimonials.length];
-  });
-
   return (
     <section id="depoimentos" className="pt-8 pb-4 lg:pt-12 lg:pb-6 bg-white relative overflow-hidden border-b border-gray-100">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gray-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none opacity-50"></div>
-      
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
           <span className="text-[#13acd3] font-bold uppercase tracking-wider text-sm mb-2 block">Prova Social</span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-[#193c5c]">O que dizem nossos clientes</h2>
           <div className="w-24 h-1 bg-[#13acd3] mx-auto mt-4 rounded-full"></div>
         </div>
-
-        {/* Grid com Animação de Transição Cinematográfica e Eventos de Arrastar */}
         <div 
           className="relative cursor-grab active:cursor-grabbing select-none"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
+          onTouchStart={(e) => { touchStartX.current = e.targetTouches[0].clientX; }}
+          onTouchEnd={(e) => { 
+            touchEndX.current = e.changedTouches[0].clientX;
+            if (touchStartX.current - touchEndX.current > 50) handleNext();
+            if (touchStartX.current - touchEndX.current < -50) handlePrev();
+          }}
+          onMouseDown={(e) => { touchStartX.current = e.clientX; }}
+          onMouseUp={(e) => { 
+            touchEndX.current = e.clientX;
+            if (touchStartX.current - touchEndX.current > 50) handleNext();
+            if (touchStartX.current - touchEndX.current < -50) handlePrev();
+          }}
         >
           <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 transition-all duration-500 ease-in-out transform ${isAnimating ? 'opacity-0 scale-95 translate-y-4' : 'opacity-100 scale-100 translate-y-0'}`}>
-            {currentItems.map((item, index) => (
-              <div 
-                key={index} 
-                className="h-[220px] lg:h-[360px] bg-[#193c5c] rounded-3xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#13acd3]/20 flex flex-col justify-between relative group"
-              >
-                {/* Efeito de brilho no hover do cartão */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#13acd3]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
-                
-                {/* Área de texto com rolagem interna caso seja muito longo */}
-                <div className="relative z-10 flex-grow overflow-y-auto hide-scrollbar mb-4">
-                  <div className="flex gap-1 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={16} className="text-yellow-400 fill-current" />
-                    ))}
+            {Array.from({ length: itemsPerPage }).map((_, i) => {
+              const item = testimonials[(pageIndex * itemsPerPage + i) % testimonials.length];
+              return (
+                <div key={i} className="h-[220px] lg:h-[360px] bg-[#193c5c] rounded-3xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#13acd3]/20 flex flex-col justify-between relative group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#13acd3]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
+                  <div className="relative z-10 flex-grow overflow-y-auto hide-scrollbar mb-4">
+                    <div className="flex gap-1 mb-3">
+                      {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-yellow-400 fill-current" />)}
+                    </div>
+                    <p className="text-white/90 italic leading-relaxed text-sm md:text-base font-light">"{item.quote}"</p>
                   </div>
-                  <p className="text-white/90 italic leading-relaxed text-sm md:text-base font-light">
-                    "{item.quote}"
-                  </p>
+                  <div className="relative z-10 pt-4 border-t border-white/10 shrink-0">
+                    <h4 className="font-bold text-white text-base md:text-lg leading-none">{item.name}</h4>
+                  </div>
                 </div>
-                
-                <div className="relative z-10 pt-4 border-t border-white/10 shrink-0">
-                  <h4 className="font-bold text-white text-base md:text-lg leading-none">{item.name}</h4>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
-
-        {/* Navegação por Pontos (Dots) */}
         <div className="flex justify-center mt-8 gap-3 pb-2">
           {Array.from({ length: totalPages }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => handleDotClick(i)}
-              className={`h-2.5 rounded-full transition-all duration-500 ease-in-out ${pageIndex === i ? 'w-10 bg-[#13acd3]' : 'w-2.5 bg-gray-300 hover:bg-[#193c5c]/50'}`}
-              aria-label={`Ir para a página ${i + 1}`}
-            />
+            <button key={i} onClick={() => handleDotClick(i)} className={`h-2.5 rounded-full transition-all duration-500 ease-in-out ${pageIndex === i ? 'w-10 bg-[#13acd3]' : 'w-2.5 bg-gray-300 hover:bg-[#193c5c]/50'}`} aria-label={`Ir para a página ${i + 1}`} />
           ))}
         </div>
-
       </div>
     </section>
   );
 };
 
-// Componente inteligente para os Vídeos Sociais (Estilo Reels/TikTok)
 const VideoCard = ({ id, src, title, postLink, index, playingVideoId, setPlayingVideoId }) => {
   const [showOverlay, setShowOverlay] = useState(true);
   const videoRef = useRef(null);
   const hideTimerRef = useRef(null);
-
-  // Determina se este vídeo específico deve tocar verificando o estado global
   const isPlaying = playingVideoId === id;
 
-  // Sincroniza o estado do React com o elemento de vídeo real (Única Fonte da Verdade)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
     if (isPlaying) {
       const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.warn("Navegador bloqueou o autoplay:", error);
-          // Se o navegador bloquear (ex: falta de interação prévia), reseta o estado
-          setPlayingVideoId(null);
-        });
-      }
+      if (playPromise !== undefined) playPromise.catch(() => setPlayingVideoId(null));
       startHideTimer();
     } else {
       video.pause();
@@ -1047,73 +976,25 @@ const VideoCard = ({ id, src, title, postLink, index, playingVideoId, setPlaying
   const startHideTimer = () => {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     setShowOverlay(true);
-    hideTimerRef.current = setTimeout(() => {
-      setShowOverlay(false);
-    }, 1500);
+    hideTimerRef.current = setTimeout(() => setShowOverlay(false), 1500);
   };
-
-  // Ao invés de usar os eventos nativos (onPlay/onPause), apenas mudamos quem é o "Rei" no momento
-  const handleTogglePlay = () => {
-    if (isPlaying) {
-      setPlayingVideoId(null); // Pausa o atual se clicar nele de novo
-    } else {
-      setPlayingVideoId(id); // Dá play neste e pausa os outros automaticamente
-    }
-  };
-
-  const handleMouseMove = () => {
-    if (isPlaying) startHideTimer();
-  };
-
-  const handleMouseLeave = () => {
-    if (isPlaying) setShowOverlay(false);
-  };
-
-  // Limpeza de memória
-  useEffect(() => {
-    return () => {
-      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    };
-  }, []);
 
   return (
     <div 
       className={`bg-white/10 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 p-2 transform hover:scale-105 transition-transform duration-300 ${index > 0 ? 'hidden sm:block' : 'block'}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={() => isPlaying && startHideTimer()}
+      onMouseLeave={() => isPlaying && setShowOverlay(false)}
     >
-      <div 
-        className="w-full aspect-[9/16] bg-black/20 rounded-xl flex items-center justify-center relative group overflow-hidden cursor-pointer"
-        onClick={handleTogglePlay}
-      >
-         <video 
-           ref={videoRef}
-           className="w-full h-full object-cover rounded-xl" 
-           playsInline
-           loop
-         >
-           <source src={src} type="video/mp4" />
-         </video>
-         
-         {/* Título / Gancho na base */}
+      <div className="w-full aspect-[9/16] bg-black/20 rounded-xl flex items-center justify-center relative group overflow-hidden cursor-pointer" onClick={() => isPlaying ? setPlayingVideoId(null) : setPlayingVideoId(id)}>
+         <video ref={videoRef} className="w-full h-full object-cover rounded-xl" playsInline loop><source src={src} type="video/mp4" /></video>
          <div className="absolute inset-x-0 bottom-0 p-4 pt-16 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-20 pointer-events-none">
             <p className="text-white font-bold text-sm leading-snug drop-shadow-md">{title}</p>
          </div>
-
-         {/* Botão Ver no Instagram */}
          <div className="absolute top-3 right-3 z-30">
-           <a 
-             href={postLink} 
-             target="_blank" 
-             rel="noopener noreferrer"
-             onClick={(e) => e.stopPropagation()} // Evita que o vídeo pause ao clicar no link
-             className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md text-white text-xs font-bold py-1.5 px-3 rounded-full hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 transition-all shadow-lg border border-white/20"
-           >
+           <a href={postLink} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md text-white text-xs font-bold py-1.5 px-3 rounded-full hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 transition-all shadow-lg border border-white/20">
              <Instagram size={14} /> Ver no Instagram
            </a>
          </div>
-
-         {/* Overlay com Ícones Play/Pause */}
          <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 z-10 ${showOverlay ? 'opacity-100' : 'opacity-0'}`}>
             <div className="bg-black/50 backdrop-blur-md p-4 rounded-full text-white shadow-xl border border-white/20 transform transition-transform duration-300 group-hover:scale-110">
                {isPlaying ? <Pause fill="currentColor" size={28} /> : <Play fill="currentColor" size={28} className="ml-1" />}
@@ -1124,23 +1005,17 @@ const VideoCard = ({ id, src, title, postLink, index, playingVideoId, setPlaying
   );
 };
 
-// Definição dos vídeos fora do componente para evitar problemas de re-renderização
 const initialVideos = [
-  { id: 1, src: "/img/video1.mp4", title: "🏥 Hospital Cruzeiro do Sul (Osasco) a partir de R$ 100/vida!", link: "https://www.instagram.com/frizzoseguros/" }, 
-  { id: 2, src: "/img/video2.mp4", title: "💡 3 Dicas infalíveis para economizar no Seguro Auto", link: "https://www.instagram.com/frizzoseguros/" },
-  { id: 3, src: "/img/video3.mp4", title: "🏠 Consórcio x Financiamento: Qual vale mais a pena?", link: "https://www.instagram.com/frizzoseguros/" },
-  { id: 4, src: "/img/video4.mp4", title: "🛡️ Por que sua empresa precisa de um seguro urgente?", link: "https://www.instagram.com/frizzoseguros/" }
+  { id: 1, src: "/img/video1.mp4", title: "O QUE VOCÊ FARIA COM 30 MIL REAIS? ✈️🚗🏠", link: "https://www.instagram.com/p/DTLkxQTEe42/" }, 
+  { id: 2, src: "/img/video2.mp4", title: "Coparticipação: Vale a pena ou não? 🧐", link: "https://www.instagram.com/p/DUbj9KLkdJF/" },
+  { id: 3, src: "/img/video3.mp4", title: "Cuidado com as promessas milagrosas no consórcio! ⚠️", link: "https://www.instagram.com/frizzoseguros/" },
+  { id: 4, src: "/img/video4.mp4", title: "Sabia que um diploma pode garantir o seu novo plano de saúde? 😉", link: "https://www.instagram.com/p/DVa8oUeEcV_/" }
 ];
 
 const Socials = () => {
   const [socialVideos, setSocialVideos] = useState(initialVideos);
-  const [playingVideoId, setPlayingVideoId] = useState(null); // Única fonte da verdade de qual vídeo está tocando
-
-  useEffect(() => {
-    // Embaralha a lista de vídeos aleatoriamente ao carregar a página
-    const shuffled = [...initialVideos].sort(() => 0.5 - Math.random());
-    setSocialVideos(shuffled);
-  }, []);
+  const [playingVideoId, setPlayingVideoId] = useState(null);
+  useEffect(() => { setSocialVideos([...initialVideos].sort(() => 0.5 - Math.random())); }, []);
 
   return (
     <section id="frizzolandia" className="pt-6 pb-20 lg:pt-8 lg:pb-24 bg-[#193c5c] overflow-hidden">
@@ -1149,45 +1024,18 @@ const Socials = () => {
              <h2 className="text-3xl md:text-5xl font-bold text-white">Conecte-se Conosco</h2>
              <p className="text-white/90 mt-4 max-w-2xl mx-auto text-lg">Acompanhe nossos conteúdos exclusivos.</p>
          </div>
-         
-         {/* Botões de Redes Sociais com layout condicional mobile */}
          <div className="grid grid-cols-2 gap-4 md:flex md:justify-center md:items-center md:space-x-8 mb-12 max-w-sm mx-auto md:max-w-none">
-             <a href="https://www.instagram.com/frizzoseguros/" target="_blank" className="flex items-center justify-center gap-2 text-white font-bold py-3 px-4 md:px-6 rounded-xl shadow-lg bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 transform hover:scale-110 transition-transform text-sm md:text-base">
-                <Instagram size={20} /> Instagram
-             </a>
-             <a href="https://www.facebook.com/FrizzoCorretoraDeSeguros" target="_blank" className="flex items-center justify-center gap-2 text-white font-bold py-3 px-4 md:px-6 rounded-xl shadow-lg bg-[#1877F2] transform hover:scale-110 transition-transform text-sm md:text-base">
-                <Facebook size={20} /> Facebook
-             </a>
-             <a href="https://br.linkedin.com/company/frizzoseguros" target="_blank" className="col-span-2 flex items-center justify-center gap-2 text-white font-bold py-3 px-4 md:px-6 rounded-xl shadow-lg bg-[#0A66C2] transform hover:scale-110 transition-transform md:w-auto text-sm md:text-base">
-                <Linkedin size={20} /> LinkedIn
-             </a>
+             <a href="https://www.instagram.com/frizzoseguros/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 text-white font-bold py-3 px-4 md:px-6 rounded-xl shadow-lg bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 transform hover:scale-110 transition-transform text-sm md:text-base"><Instagram size={20} /> Instagram</a>
+             <a href="https://www.facebook.com/FrizzoCorretoraDeSeguros" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 text-white font-bold py-3 px-4 md:px-6 rounded-xl shadow-lg bg-[#1877F2] transform hover:scale-110 transition-transform text-sm md:text-base"><Facebook size={20} /> Facebook</a>
+             <a href="https://br.linkedin.com/company/frizzoseguros" target="_blank" rel="noopener noreferrer" className="col-span-2 flex items-center justify-center gap-2 text-white font-bold py-3 px-4 md:px-6 rounded-xl shadow-lg bg-[#0A66C2] transform hover:scale-110 transition-transform md:w-auto text-sm md:text-base"><Linkedin size={20} /> LinkedIn</a>
          </div>
-
-         {/* Grid de Vídeos com o novo componente VideoCard */}
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
              {socialVideos.map((video, index) => (
-               <VideoCard 
-                 key={video.id} 
-                 id={video.id}
-                 src={video.src}
-                 title={video.title}
-                 postLink={video.link} 
-                 index={index} 
-                 playingVideoId={playingVideoId}
-                 setPlayingVideoId={setPlayingVideoId}
-               />
+               <VideoCard key={video.id} id={video.id} src={video.src} title={video.title} postLink={video.link} index={index} playingVideoId={playingVideoId} setPlayingVideoId={setPlayingVideoId} />
              ))}
          </div>
-
-         {/* Botão Ver mais vídeos exclusivo mobile */}
          <div className="mt-8 flex justify-center sm:hidden">
-            <a 
-              href="https://www.instagram.com/frizzoseguros/" 
-              target="_blank" 
-              className="flex items-center gap-2 bg-white/10 text-white font-semibold py-3 px-8 rounded-full border border-white/20 hover:bg-white/20 transition-all active:scale-95"
-            >
-              Ver mais vídeos <Instagram size={18} />
-            </a>
+            <a href="https://www.instagram.com/frizzoseguros/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white/10 text-white font-semibold py-3 px-8 rounded-full border border-white/20 hover:bg-white/20 transition-all active:scale-95">Ver mais vídeos <Instagram size={18} /></a>
          </div>
        </div>
     </section>
@@ -1196,113 +1044,89 @@ const Socials = () => {
 
 const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
   <footer className="bg-white border-t border-gray-200">
-     <div className="container mx-auto py-8 px-6 flex flex-wrap justify-between items-center text-sm text-gray-600">
-        <div className="w-full md:w-auto text-center md:text-left mb-4 md:mb-0">
-           <span className="font-medium text-[#193c5c] block md:inline">© 2026 Frizzo Corretora de Seguros.</span>
-           <span className="block text-xs text-gray-400 mt-1 md:mt-2">Registro SUSEP: 202030532</span>
+     <div className="container mx-auto py-10 px-6 grid grid-cols-1 md:grid-cols-3 items-center gap-10 text-sm text-gray-600">
+        
+        {/* Coluna Esquerda: Copyright */}
+        <div className="text-center md:text-left flex flex-col gap-1">
+           <span className="font-medium text-[#193c5c] text-base">© 1997 - 2026 Frizzo Corretora de Seguros.</span>
+           <span className="block text-xs text-gray-500 font-semibold tracking-wide">Registro SUSEP: 202030532</span>
         </div>
-        <div className="w-full md:w-auto flex justify-center space-x-8 mb-4 md:mb-0">
-           <button onClick={onOpenPrivacy} className="hover:text-[#13acd3] transition-colors focus:outline-none">Política de Privacidade</button>
-           <button onClick={onOpenTerms} className="hover:text-[#13acd3] transition-colors focus:outline-none">Termos de Uso</button>
+        
+        {/* Coluna Central: Políticas e Design (Sleek Button com borda roxa clara e grossa) */}
+        <div className="flex flex-col items-center justify-center gap-5">
+           <div className="flex justify-center space-x-6">
+              <button onClick={onOpenPrivacy} className="hover:text-[#13acd3] transition-colors focus:outline-none font-medium">Política de Privacidade</button>
+              <button onClick={onOpenTerms} className="hover:text-[#13acd3] transition-colors focus:outline-none font-medium">Termos de Uso</button>
+           </div>
+           
+           <a 
+             href="https://ortzstudios.com.br/" 
+             target="_blank" 
+             rel="noopener noreferrer" 
+             className="group relative flex items-center gap-3 px-6 py-2.5 bg-[#0a0510] border-3 border-[#d8b4fe]/70 rounded-full transition-all duration-300 hover:scale-[1.03] hover:border-[#d8b4fe] hover:shadow-[0_0_15px_rgba(216,180,254,0.3)] active:scale-95 shadow-lg"
+           >
+             <Layers size={18} className="text-[#d8b4fe] group-hover:rotate-[20deg] transition-transform duration-500" />
+             <span className="text-xs text-gray-400 font-medium">
+               Design by <span className="text-white font-bold text-sm ml-1 group-hover:text-[#d8b4fe] transition-colors">OrtLabs</span>
+             </span>
+           </a>
         </div>
-        <div className="w-full md:w-auto flex justify-center space-x-6">
-           <a href="https://br.linkedin.com/company/frizzoseguros" target="_blank" className="text-[#13acd3] opacity-60 hover:opacity-100 transition-opacity hover:scale-110 transform duration-200">
-             <Linkedin size={24} />
-           </a>
-           <a href="https://www.instagram.com/frizzoseguros/" target="_blank" className="text-[#13acd3] opacity-60 hover:opacity-100 transition-opacity hover:scale-110 transform duration-200">
-             <Instagram size={24} />
-           </a>
-           <a href="https://www.facebook.com/FrizzoCorretoraDeSeguros" target="_blank" className="text-[#13acd3] opacity-60 hover:opacity-100 transition-opacity hover:scale-110 transform duration-200">
-             <Facebook size={24} />
-           </a>
+        
+        {/* Coluna Direita: Redes Sociais */}
+        <div className="flex flex-col items-center justify-center gap-3">
+           <span className="text-sm font-semibold text-[#193c5c]">Redes Sociais</span>
+           <div className="flex justify-center space-x-7">
+               <a href="https://br.linkedin.com/company/frizzoseguros" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
+                 <Linkedin size={26} />
+               </a>
+               <a href="https://www.instagram.com/frizzoseguros/" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
+                 <Instagram size={26} />
+               </a>
+               <a href="https://www.facebook.com/FrizzoCorretoraDeSeguros" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
+                 <Facebook size={26} />
+               </a>
+           </div>
         </div>
      </div>
   </footer>
 );
 
-// --- Inicialização Inteligente do Google Analytics ---
+// --- Analytics e Cookies ---
 const initGoogleAnalytics = () => {
-  if (typeof window === 'undefined') return;
-  
-  // Evita carregar o script duplicado caso a pessoa clique duas vezes
-  if (document.getElementById('ga-script')) return;
-
-  // Cria e injeta o script externo do GTAG
+  if (typeof window === 'undefined' || document.getElementById('ga-script')) return;
   const script1 = document.createElement('script');
-  script1.id = 'ga-script';
-  script1.async = true;
-  script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-0GE33YYLNN';
+  script1.id = 'ga-script'; script1.async = true; script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-0GE33YYLNN';
   document.head.appendChild(script1);
-
-  // Cria e injeta o script de configuração com a sua ID
   const script2 = document.createElement('script');
   script2.id = 'ga-inline-script';
-  script2.innerHTML = `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-0GE33YYLNN');
-  `;
+  script2.innerHTML = `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-0GE33YYLNN');`;
   document.head.appendChild(script2);
-  
-  console.log('Google Analytics (G-0GE33YYLNN) inicializado com sucesso via consentimento!');
 };
 
 const CookieBanner = ({ onOpenPrivacy }) => {
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     try {
       const consent = localStorage.getItem('cookieConsent');
-      if (!consent) {
-        setIsVisible(true);
-      } else if (consent === 'true') {
-        // Se o usuário já havia aceitado em uma visita anterior, inicia o Analytics logo de cara
-        initGoogleAnalytics();
-      }
-    } catch (error) {
-      console.warn('Acesso ao localStorage bloqueado pelo ambiente de preview.');
-      setIsVisible(true);
-    }
+      if (!consent) setIsVisible(true);
+      else if (consent === 'true') initGoogleAnalytics();
+    } catch { setIsVisible(true); }
   }, []);
-
   const acceptCookies = () => {
-    try {
-      localStorage.setItem('cookieConsent', 'true');
-      // Dispara o Google Analytics no exato momento em que ele clica em "Aceitar"
-      initGoogleAnalytics(); 
-    } catch (error) {
-      console.warn('Não foi possível salvar no localStorage neste ambiente.');
-    }
+    try { localStorage.setItem('cookieConsent', 'true'); initGoogleAnalytics(); } catch {}
     setIsVisible(false);
   };
-
   if (!isVisible) return null;
-
   return (
     <div className="fixed bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-auto md:w-[400px] z-[70] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 p-6 animate-slideUpFade">
       <div className="flex items-start gap-4">
-        <div className="p-3 bg-gradient-to-br from-[#13acd3]/20 to-[#01cbfe]/20 text-[#13acd3] rounded-2xl flex-shrink-0">
-          <Info size={24} />
-        </div>
+        <div className="p-3 bg-gradient-to-br from-[#13acd3]/20 to-[#01cbfe]/20 text-[#13acd3] rounded-2xl flex-shrink-0"><Info size={24} /></div>
         <div>
           <h4 className="font-bold text-[#193c5c] mb-1.5 text-lg">Aviso de Cookies</h4>
-          <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-            Utilizamos cookies para personalizar conteúdos e melhorar a sua experiência. Ao continuar, concorda com a nossa <button onClick={onOpenPrivacy} className="text-[#13acd3] hover:underline font-semibold focus:outline-none">Política de Privacidade</button>.
-          </p>
+          <p className="text-sm text-gray-600 mb-4 leading-relaxed">Utilizamos cookies para personalizar conteúdos. Ao continuar, concorda com a nossa <button onClick={onOpenPrivacy} className="text-[#13acd3] hover:underline font-semibold focus:outline-none">Política de Privacidade</button>.</p>
           <div className="flex gap-2">
-            <button
-              onClick={acceptCookies}
-              className="flex-1 bg-[#193c5c] hover:bg-[#13acd3] text-white font-bold py-2.5 px-4 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95 text-sm"
-            >
-              Aceitar
-            </button>
-            <button
-              onClick={() => setIsVisible(false)}
-              className="px-4 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-colors text-sm"
-            >
-              Fechar
-            </button>
+            <button onClick={acceptCookies} className="flex-1 bg-[#193c5c] hover:bg-[#13acd3] text-white font-bold py-2.5 px-4 rounded-xl transition-all shadow-md active:scale-95 text-sm">Aceitar</button>
+            <button onClick={() => setIsVisible(false)} className="px-4 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-colors text-sm">Fechar</button>
           </div>
         </div>
       </div>
@@ -1310,31 +1134,21 @@ const CookieBanner = ({ onOpenPrivacy }) => {
   );
 };
 
-// Componente da Janela Modal para os textos legais
 const LegalModal = ({ title, content, onClose }) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    return () => { document.body.style.overflow = 'unset'; };
   }, []);
-
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn" onClick={onClose}>
       <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-zoomIn" onClick={e => e.stopPropagation()}>
         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <h3 className="text-xl font-bold text-[#193c5c]">{title}</h3>
-          <button onClick={onClose} className="p-2 text-gray-400 hover:text-[#13acd3] hover:bg-white rounded-full transition-all shadow-sm border border-transparent hover:border-gray-200">
-            <X size={20} />
-          </button>
+          <button onClick={onClose} className="p-2 text-gray-400 hover:text-[#13acd3] hover:bg-white rounded-full transition-all border border-transparent hover:border-gray-200"><X size={20} /></button>
         </div>
-        <div className="p-6 overflow-y-auto flex-grow">
-          {content}
-        </div>
+        <div className="p-6 overflow-y-auto flex-grow">{content}</div>
         <div className="p-4 border-t border-gray-100 bg-gray-50 text-right">
-          <button onClick={onClose} className="bg-[#193c5c] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#13acd3] transition-colors text-sm shadow-md">
-            Entendido
-          </button>
+          <button onClick={onClose} className="bg-[#193c5c] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#13acd3] transition-colors text-sm shadow-md">Entendido</button>
         </div>
       </div>
     </div>
@@ -1343,124 +1157,32 @@ const LegalModal = ({ title, content, onClose }) => {
 
 export default function App() {
   const [activeModal, setActiveModal] = useState(null); 
-
   return (
-    <div 
-      className="font-sans antialiased text-gray-800 bg-white selection:bg-[#01cbfe] selection:text-white"
-      onContextMenu={(e) => e.preventDefault()}
-      onDragStart={(e) => e.preventDefault()}
-    >
+    <div className="font-sans antialiased text-gray-800 bg-white selection:bg-[#01cbfe] selection:text-white" onContextMenu={(e) => e.preventDefault()} onDragStart={(e) => e.preventDefault()}>
       <style>{`
         html { scroll-behavior: smooth; }
-        
-        /* Regras de proteção do conteúdo */
-        body {
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-        
-        /* Permite seleção de texto apenas nos formulários */
-        input, textarea, select {
-          -webkit-touch-callout: default;
-          -webkit-user-select: auto;
-          -khtml-user-select: auto;
-          -moz-user-select: auto;
-          -ms-user-select: auto;
-          user-select: auto;
-        }
-
-        /* Impede o arraste e salvamento de imagens */
-        img {
-          -webkit-user-drag: none;
-          -khtml-user-drag: none;
-          -moz-user-drag: none;
-          -o-user-drag: none;
-          user-drag: none;
-          pointer-events: none;
-        }
-
-        /* Exceção para imagens que precisam de clique (como as logos das seguradoras) */
-        .cursor-pointer img {
-          -pointer-events: auto;
-        }
-
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-scroll {
-          animation: scroll 40s linear infinite;
-        }
-        
-        .scroller:hover .animate-scroll {
-          animation-play-state: paused;
-        }
-        
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-slideUpFade {
-          animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-in forwards;
-        }
-
-        @keyframes blurIn {
-          0% { opacity: 0; transform: translateY(20px) scale(0.95); filter: blur(5px); }
-          100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-        }
-        .animate-blurIn {
-          animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-
-        @keyframes zoomIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        .animate-zoomIn {
-          animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-5px); }
-          100% { transform: translateY(0px); }
-        }
-        .animate-float {
-          animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse-whatsapp {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-          50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
-        }
-
-        .mask-linear-gradient {
-          mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-          -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-        }
-        
-        /* Oculta a barra de rolagem do carrossel mas mantém a funcionalidade */
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
+        body { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+        input, textarea, select { -webkit-user-select: auto; user-select: auto; }
+        img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
+        .cursor-pointer img { pointer-events: auto; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-scroll { animation: scroll 40s linear infinite; }
+        .scroller:hover .animate-scroll { animation-play-state: paused; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slideUpFade { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-in forwards; }
+        @keyframes blurIn { 0% { opacity: 0; transform: translateY(20px) scale(0.95); filter: blur(5px); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+        .animate-blurIn { animation: blurIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .animate-zoomIn { animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        @keyframes pulse-whatsapp { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } }
+        .mask-linear-gradient { mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-      
       <Header />
       <Hero />
       <Services />
@@ -1469,42 +1191,15 @@ export default function App() {
       <Contact />
       <Testimonials />
       <Socials />
-      <Footer 
-        onOpenPrivacy={() => setActiveModal('privacy')} 
-        onOpenTerms={() => setActiveModal('terms')} 
-      />
-      
+      <Footer onOpenPrivacy={() => setActiveModal('privacy')} onOpenTerms={() => setActiveModal('terms')} />
       <CookieBanner onOpenPrivacy={() => setActiveModal('privacy')} />
-      
-      {activeModal === 'privacy' && (
-        <LegalModal 
-          title="Política de Privacidade" 
-          content={privacyPolicyContent} 
-          onClose={() => setActiveModal(null)} 
-        />
-      )}
-      
-      {activeModal === 'terms' && (
-        <LegalModal 
-          title="Termos de Uso" 
-          content={termsOfUseContent} 
-          onClose={() => setActiveModal(null)} 
-        />
-      )}
-      
-      <a 
-        href="https://wa.me/5511973039860"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-green-600 text-white w-14 h-14 hover:w-[170px] rounded-full flex items-center shadow-lg transition-all duration-300 ease-in-out z-[60] overflow-hidden"
-        style={{ animation: 'pulse-whatsapp 2s infinite' }}
-      >
+      {activeModal === 'privacy' && <LegalModal title="Política de Privacidade" content={privacyPolicyContent} onClose={() => setActiveModal(null)} />}
+      {activeModal === 'terms' && <LegalModal title="Termos de Uso" content={termsOfUseContent} onClose={() => setActiveModal(null)} />}
+      <a href="https://wa.me/5511973039860" target="_blank" rel="noopener noreferrer" className="group fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-green-600 text-white w-14 h-14 hover:w-[170px] rounded-full flex items-center shadow-lg transition-all duration-300 ease-in-out z-[60] overflow-hidden" style={{ animation: 'pulse-whatsapp 2s infinite' }}>
         <div className="flex items-center justify-center min-w-[3.5rem] h-full">
           <img src="/img/wpp.png" alt="WhatsApp" className="w-8 h-8 filter brightness-0 invert transform transition-transform group-hover:scale-110" />
         </div>
-        <span className="font-bold text-sm tracking-wide whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-4">
-          Fale Conosco
-        </span>
+        <span className="font-bold text-sm tracking-wide whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-4">Fale Conosco</span>
       </a>
     </div>
   );
