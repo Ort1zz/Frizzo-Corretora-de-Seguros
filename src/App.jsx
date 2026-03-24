@@ -817,7 +817,7 @@ const Testimonials = () => {
       name: "Tatiane Paula"
     },
     {
-      quote: "Foi uma experiência satisfatória gostei muito e super indico é  com ffrizzo seguros as coisas se torna bem mais simples...",
+      quote: "Foi uma experiência satisfatória gostei muito e super indico é com ffrizzo seguros as coisas se torna bem mais simples...",
       name: "Joelson Santos"
     },
     {
@@ -853,6 +853,10 @@ const Testimonials = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [isAnimating, setIsAnimating] = useState(false);
+  
+  // Referências para o gesto de arrastar (swipe)
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   // Define quantos cartões aparecem por vez dependendo da tela (Celular = 2, Tablet = 2, PC = 3)
   useEffect(() => {
@@ -876,17 +880,23 @@ const Testimonials = () => {
   }, [itemsPerPage, totalPages]);
 
   const handleNext = () => {
-    if (isAnimating) return; // Evita bugar se clicar rápido demais
+    if (isAnimating) return; 
     setIsAnimating(true);
-    
-    // Inicia a animação de sumir, aguarda 400ms, troca os dados e deixa aparecer de novo
     setTimeout(() => {
       setPageIndex((prev) => (prev + 1) % totalPages);
       setIsAnimating(false);
     }, 400); 
   };
 
-  // Permite clicar nos pontinhos para navegar
+  const handlePrev = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setTimeout(() => {
+      setPageIndex((prev) => (prev - 1 + totalPages) % totalPages);
+      setIsAnimating(false);
+    }, 400);
+  };
+
   const handleDotClick = (index) => {
     if (isAnimating || index === pageIndex) return;
     setIsAnimating(true);
@@ -894,6 +904,40 @@ const Testimonials = () => {
       setPageIndex(index);
       setIsAnimating(false);
     }, 400);
+  };
+
+  // Funções de Arrastar (Swipe) para Celular e Mouse
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current - touchEndX.current > 50) {
+      handleNext(); // Arrasta pra esquerda -> Próximo
+    }
+    if (touchStartX.current - touchEndX.current < -50) {
+      handlePrev(); // Arrasta pra direita -> Anterior
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    touchStartX.current = e.clientX;
+    touchEndX.current = e.clientX;
+  };
+
+  const handleMouseUp = (e) => {
+    touchEndX.current = e.clientX;
+    if (touchStartX.current - touchEndX.current > 50) {
+      handleNext();
+    }
+    if (touchStartX.current - touchEndX.current < -50) {
+      handlePrev();
+    }
   };
 
   // Separa apenas os itens que devem aparecer na página atual
@@ -913,30 +957,39 @@ const Testimonials = () => {
           <div className="w-24 h-1 bg-[#13acd3] mx-auto mt-4 rounded-full"></div>
         </div>
 
-        {/* Grid com Animação de Transição Cinematográfica */}
-        <div className="relative">
-          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-500 ease-in-out transform ${isAnimating ? 'opacity-0 scale-95 translate-y-4' : 'opacity-100 scale-100 translate-y-0'}`}>
+        {/* Grid com Animação de Transição Cinematográfica e Eventos de Arrastar */}
+        <div 
+          className="relative cursor-grab active:cursor-grabbing select-none"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 transition-all duration-500 ease-in-out transform ${isAnimating ? 'opacity-0 scale-95 translate-y-4' : 'opacity-100 scale-100 translate-y-0'}`}>
             {currentItems.map((item, index) => (
               <div 
                 key={index} 
-                className="h-[400px] lg:h-[360px] bg-[#193c5c] rounded-3xl p-6 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#13acd3]/20 flex flex-col justify-between relative group"
+                className="h-[220px] lg:h-[360px] bg-[#193c5c] rounded-3xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#13acd3]/20 flex flex-col justify-between relative group"
               >
                 {/* Efeito de brilho no hover do cartão */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#13acd3]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
                 
-                <div className="relative z-10">
-                  <div className="flex gap-1 mb-6">
+                {/* Área de texto com rolagem interna caso seja muito longo */}
+                <div className="relative z-10 flex-grow overflow-y-auto hide-scrollbar mb-4">
+                  <div className="flex gap-1 mb-3">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={20} className="text-yellow-400 fill-current" />
+                      <Star key={i} size={16} className="text-yellow-400 fill-current" />
                     ))}
                   </div>
-                  <p className="text-white/90 italic leading-relaxed mb-8 text-sm md:text-base font-light">
+                  <p className="text-white/90 italic leading-relaxed text-sm md:text-base font-light">
                     "{item.quote}"
                   </p>
                 </div>
                 
-                <div className="relative z-10 pt-5 border-t border-white/10">
-                  <h4 className="font-bold text-white text-lg leading-none">{item.name}</h4>
+                <div className="relative z-10 pt-4 border-t border-white/10 shrink-0">
+                  <h4 className="font-bold text-white text-base md:text-lg leading-none">{item.name}</h4>
                 </div>
               </div>
             ))}
@@ -1146,7 +1199,7 @@ const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
      <div className="container mx-auto py-8 px-6 flex flex-wrap justify-between items-center text-sm text-gray-600">
         <div className="w-full md:w-auto text-center md:text-left mb-4 md:mb-0">
            <span className="font-medium text-[#193c5c] block md:inline">© 2026 Frizzo Corretora de Seguros.</span>
-           <span className="block text-xs text-gray-400 mt-1 md:mt-2">Registro SUSEP: [Insira seu número SUSEP aqui]</span>
+           <span className="block text-xs text-gray-400 mt-1 md:mt-2">Registro SUSEP: 202030532</span>
         </div>
         <div className="w-full md:w-auto flex justify-center space-x-8 mb-4 md:mb-0">
            <button onClick={onOpenPrivacy} className="hover:text-[#13acd3] transition-colors focus:outline-none">Política de Privacidade</button>
