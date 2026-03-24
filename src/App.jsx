@@ -854,12 +854,11 @@ const Testimonials = () => {
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Define quantos cartões aparecem por vez dependendo da tela (Celular = 1, Tablet = 2, PC = 3)
+  // Define quantos cartões aparecem por vez dependendo da tela (Celular = 2, Tablet = 2, PC = 3)
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) setItemsPerPage(3);
-      else if (window.innerWidth >= 768) setItemsPerPage(2);
-      else setItemsPerPage(1);
+      else setItemsPerPage(2);
     };
     handleResize(); // Configura no carregamento
     window.addEventListener('resize', handleResize);
@@ -962,7 +961,7 @@ const Testimonials = () => {
 };
 
 // Componente inteligente para os Vídeos Sociais (Estilo Reels/TikTok)
-const VideoCard = ({ id, src, index, playingVideoId, setPlayingVideoId }) => {
+const VideoCard = ({ id, src, title, postLink, index, playingVideoId, setPlayingVideoId }) => {
   const [showOverlay, setShowOverlay] = useState(true);
   const videoRef = useRef(null);
   const hideTimerRef = useRef(null);
@@ -1031,21 +1030,39 @@ const VideoCard = ({ id, src, index, playingVideoId, setPlayingVideoId }) => {
       onMouseLeave={handleMouseLeave}
     >
       <div 
-        className="w-full aspect-[9/16] bg-black/20 rounded-lg flex items-center justify-center relative group overflow-hidden cursor-pointer"
+        className="w-full aspect-[9/16] bg-black/20 rounded-xl flex items-center justify-center relative group overflow-hidden cursor-pointer"
         onClick={handleTogglePlay}
       >
          <video 
            ref={videoRef}
-           className="w-full h-full object-cover rounded-lg" 
+           className="w-full h-full object-cover rounded-xl" 
            playsInline
            loop
          >
            <source src={src} type="video/mp4" />
          </video>
          
+         {/* Título / Gancho na base */}
+         <div className="absolute inset-x-0 bottom-0 p-4 pt-16 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-20 pointer-events-none">
+            <p className="text-white font-bold text-sm leading-snug drop-shadow-md">{title}</p>
+         </div>
+
+         {/* Botão Ver no Instagram */}
+         <div className="absolute top-3 right-3 z-30">
+           <a 
+             href={postLink} 
+             target="_blank" 
+             rel="noopener noreferrer"
+             onClick={(e) => e.stopPropagation()} // Evita que o vídeo pause ao clicar no link
+             className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md text-white text-xs font-bold py-1.5 px-3 rounded-full hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 transition-all shadow-lg border border-white/20"
+           >
+             <Instagram size={14} /> Ver no Instagram
+           </a>
+         </div>
+
          {/* Overlay com Ícones Play/Pause */}
-         <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 z-20 ${showOverlay ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="bg-black/50 backdrop-blur-md p-4 rounded-full text-white shadow-xl border border-white/20 transform transition-transform duration-300 hover:scale-110">
+         <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 z-10 ${showOverlay ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="bg-black/50 backdrop-blur-md p-4 rounded-full text-white shadow-xl border border-white/20 transform transition-transform duration-300 group-hover:scale-110">
                {isPlaying ? <Pause fill="currentColor" size={28} /> : <Play fill="currentColor" size={28} className="ml-1" />}
             </div>
          </div>
@@ -1056,10 +1073,10 @@ const VideoCard = ({ id, src, index, playingVideoId, setPlayingVideoId }) => {
 
 // Definição dos vídeos fora do componente para evitar problemas de re-renderização
 const initialVideos = [
-  { id: 1, src: "/img/video1.mp4" }, 
-  { id: 2, src: "/img/video2.mp4" },
-  { id: 3, src: "/img/video3.mp4" },
-  { id: 4, src: "/img/video4.mp4" }
+  { id: 1, src: "/img/video1.mp4", title: "🏥 Hospital Cruzeiro do Sul (Osasco) a partir de R$ 100/vida!", link: "https://www.instagram.com/frizzoseguros/" }, 
+  { id: 2, src: "/img/video2.mp4", title: "💡 3 Dicas infalíveis para economizar no Seguro Auto", link: "https://www.instagram.com/frizzoseguros/" },
+  { id: 3, src: "/img/video3.mp4", title: "🏠 Consórcio x Financiamento: Qual vale mais a pena?", link: "https://www.instagram.com/frizzoseguros/" },
+  { id: 4, src: "/img/video4.mp4", title: "🛡️ Por que sua empresa precisa de um seguro urgente?", link: "https://www.instagram.com/frizzoseguros/" }
 ];
 
 const Socials = () => {
@@ -1099,7 +1116,9 @@ const Socials = () => {
                <VideoCard 
                  key={video.id} 
                  id={video.id}
-                 src={video.src} 
+                 src={video.src}
+                 title={video.title}
+                 postLink={video.link} 
                  index={index} 
                  playingVideoId={playingVideoId}
                  setPlayingVideoId={setPlayingVideoId}
@@ -1126,7 +1145,7 @@ const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
   <footer className="bg-white border-t border-gray-200">
      <div className="container mx-auto py-8 px-6 flex flex-wrap justify-between items-center text-sm text-gray-600">
         <div className="w-full md:w-auto text-center md:text-left mb-4 md:mb-0">
-           <span className="font-medium text-[#193c5c] block md:inline">&copy; 2026 Frizzo Corretora de Seguros.</span>
+           <span className="font-medium text-[#193c5c] block md:inline">© 2026 Frizzo Corretora de Seguros.</span>
            <span className="block text-xs text-gray-400 mt-1 md:mt-2">Registro SUSEP: [Insira seu número SUSEP aqui]</span>
         </div>
         <div className="w-full md:w-auto flex justify-center space-x-8 mb-4 md:mb-0">
