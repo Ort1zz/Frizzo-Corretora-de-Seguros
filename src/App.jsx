@@ -13,25 +13,25 @@ const privacyPolicyContent = (
   <div className="space-y-4 text-gray-600 text-sm leading-relaxed text-left">
     <p>A <strong>Frizzo Corretora de Seguros</strong> valoriza a sua privacidade e está comprometida em proteger os seus dados pessoais. Esta Política de Privacidade explica como recolhemos, usamos e partilhamos informações quando utiliza o nosso site.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">1. Dados que Recolhemos</h4>
-    <p>Recolhemos dados pessoais que nos fornece voluntariamente através dos nossos formulários de contacto e cotação, tais como: nome completo, endereço de e-mail, número de telefone (WhatsApp) e tipo de seguro desejado.</p>
+    <p>Recolhemos dados pessoais que nos fornece voluntariamente através dos nossos formulários de contato e cotação, tais como: nome completo, endereço de e-mail, número de telefone (WhatsApp) e tipo de seguro desejado.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">2. Como Usamos Os Seus Dados</h4>
-    <p>Os dados recolhidos são utilizados exclusivamente para: processar e responder aos seus pedidos de cotação; comunicar consigo sobre produtos e serviços; melhorar a experiêcia de navegação no nosso site; e para fins de remarketing e análises estatísticas, sempre em conformidade com a Lei Geral de Proteção de Dados (LGPD).</p>
+    <p>Os dados recolhidos são utilizados exclusivamente para: processar e responder aos seus pedidos de cotação; comunicar consigo sobre produtos e serviços; melhorar a experiência de navegação no nosso site; e para fins de remarketing e análises estatísticas, sempre em conformidade com a Lei Geral de Proteção de Dados (LGPD).</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">3. Partilha de Dados</h4>
     <p>As suas informações podem ser partilhadas estritamente com as nossas seguradoras parceiras (ex: SulAmérica, Porto Seguro, Amil, Allianz, etc.) com o único propósito de gerar as cotações solicitadas. Não vendemos nem alugamos os seus dados a terceiros.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">4. Direitos do Titular (LGPD)</h4>
-    <p>De acordo com a LGPD, tem o direito de solicitar o acesso, correção, atualização ou eliminação dos seus dados pessoais da nossa base de dados a qualquer momento, bastando contactar-nos através dos nossos canais oficiais de atendimento.</p>
+    <p>De acordo com a LGPD, tem o direito de solicitar o acesso, correção, atualização ou eliminação dos seus dados pessoais da nossa base de dados a qualquer momento, bastando contatar-nos através dos nossos canais oficiais de atendimento.</p>
   </div>
 );
 
 const termsOfUseContent = (
   <div className="space-y-4 text-gray-600 text-sm leading-relaxed text-left">
-    <p>Bem-vindo ao site da <strong>Frizzo Corretora de Seguros</strong>. Ao aceder e utilizar este site, concorda com os presentes Termos de Uso.</p>
+    <p>Bem-vindo ao site da <strong>Frizzo Corretora de Seguros</strong>. Ao acessar e utilizar este site, concorda com os presentes Termos de Uso.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">1. Serviços Oferecidos</h4>
-    <p>O nosso site disponibiliza informações sobre os nossos serviços de corretagem de seguros (saúde, automóvel, empresarial, vida, consórcio, etc.) e permite que os utilizadores solicititem cotações online. Os valores e condições apresentados em simulações estão sujeitos a análise e aprovação das respetivas seguradoras.</p>
+    <p>O nosso site disponibiliza informações sobre os nossos serviços de corretagem de seguros (saúde, automóvel, empresarial, vida, consórcio, etc.) e permite que os utilizadores solicitem cotações online. Os valores e condições apresentados em simulações estão sujeitos a análise e aprovação das respectivas seguradoras.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">2. Responsabilidades do Utilizador</h4>
     <p>Ao solicitar uma cotação, o utilizador compromete-se a fornecer informações verdadeiras, exatas e completas. A Frizzo Corretora não se responsabiliza por cotações imprecisas resultantes de dados incorretos fornecidos pelo utilizador.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">3. Propriedade Intelectual</h4>
-    <p>Todo o conteúdo, design, logótipos e imagens presentes neste site são propriedade da Frizzo Corretora de Seguros ou dos seus parceiros e estão protegidos pelas leis de direitos de autor.</p>
+    <p>Todo o conteúdo, design, logotipos e imagens presentes neste site são propriedade da Frizzo Corretora de Seguros ou dos seus parceiros e estão protegidos pelas leis de direitos de autor.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">4. Limitação de Responsabilidade</h4>
     <p>Esforçamo-nos para manter o site atualizado e livre de erros, mas não garantimos que o funcionamento seja ininterrupto. A Frizzo Corretora não será responsável por quaisquer danos diretos ou indiretos decorrentes do uso ou da incapacidade de usar o nosso site.</p>
   </div>
@@ -119,7 +119,7 @@ const INITIAL_VIDEOS = [
   { id: 1, src: "/img/video1.mp4", title: "O QUE VOCÊ FARIA COM 30 MIL REAIS? ✈️🚗🏠", link: "https://www.instagram.com/p/DTLkxQTEe42/" }, 
   { id: 2, src: "/img/video2.mp4", title: "Coparticipação: Vale a pena ou não? 🧐", link: "https://www.instagram.com/p/DUbj9KLkdJF/" },
   { id: 3, src: "/img/video3.mp4", title: "Cuidado com as promessas milagrosas no consórcio! ⚠️", link: "https://www.instagram.com/frizzoseguros/" },
-  { id: 4, src: "/img/video4.mp4", title: "Sabia que um diploma guarantee o seu novo plano de saúde? 😉", link: "https://www.instagram.com/p/DVa8oUeEcV_/" }
+  { id: 4, src: "/img/video4.mp4", title: "Sabia que um diploma garante o seu novo plano de saúde? 😉", link: "https://www.instagram.com/p/DVa8oUeEcV_/" }
 ];
 
 // --- Funções Auxiliares de Funcionalidade ---
@@ -584,9 +584,16 @@ const About = () => {
   const handleScroll = () => {
     if (scrollRef.current) {
       const scrollPosition = scrollRef.current.scrollLeft;
-      const cardWidth = scrollRef.current.offsetWidth;
-      const newIndex = Math.round(scrollPosition / cardWidth);
-      setActiveIndex(newIndex);
+      const cardWidth = scrollRef.current.children[0]?.offsetWidth || scrollRef.current.offsetWidth;
+      const gap = 20;
+      const newIndex = Math.round(scrollPosition / (cardWidth + gap));
+      setActiveIndex(Math.min(Math.max(newIndex, 0), 2));
+    }
+  };
+
+  const scrollToCard = (idx) => {
+    if (scrollRef.current && scrollRef.current.children[idx]) {
+      scrollRef.current.children[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
   };
 
@@ -617,10 +624,10 @@ const About = () => {
           <div 
             ref={scrollRef}
             onScroll={handleScroll}
-            className="flex md:grid md:grid-cols-3 gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-4 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0"
+            className="flex md:grid md:grid-cols-3 gap-5 md:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory hide-scrollbar pb-4 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0"
           >
               {/* Missão */}
-              <div className="w-full min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-auto snap-center shrink-0 bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
+              <div className={`w-full min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-auto snap-center shrink-0 bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-700 ease-out relative overflow-hidden group flex flex-col justify-start md:opacity-100 md:blur-none md:scale-100 ${activeIndex === 0 ? 'opacity-100 blur-none scale-100' : 'opacity-50 blur-sm scale-95'}`}>
                  <div className="absolute top-0 left-0 w-full h-1.5 bg-[#13acd3] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                  <div className="bg-[#13acd3]/10 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#13acd3] transition-colors duration-500">
                     <Target size={24} className="text-[#13acd3] group-hover:text-white transition-colors duration-500" />
@@ -632,7 +639,7 @@ const About = () => {
               </div>
               
               {/* Visão */}
-              <div className="w-full min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-auto snap-center shrink-0 bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
+              <div className={`w-full min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-auto snap-center shrink-0 bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-700 ease-out relative overflow-hidden group flex flex-col justify-start md:opacity-100 md:blur-none md:scale-100 ${activeIndex === 1 ? 'opacity-100 blur-none scale-100' : 'opacity-50 blur-sm scale-95'}`}>
                  <div className="absolute top-0 left-0 w-full h-1.5 bg-[#193c5c] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                  <div className="bg-[#193c5c]/10 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#193c5c] transition-colors duration-500">
                     <Eye size={24} className="text-[#193c5c] group-hover:text-white transition-colors duration-500" />
@@ -644,7 +651,7 @@ const About = () => {
               </div>
               
               {/* Valores */}
-              <div className="w-full min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-auto snap-center shrink-0 bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
+              <div className={`w-full min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-auto snap-center shrink-0 bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-700 ease-out relative overflow-hidden group flex flex-col justify-start md:opacity-100 md:blur-none md:scale-100 ${activeIndex === 2 ? 'opacity-100 blur-none scale-100' : 'opacity-50 blur-sm scale-95'}`}>
                  <div className="absolute top-0 left-0 w-full h-1.5 bg-orange-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                  <div className="bg-orange-50 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-orange-400 transition-colors duration-500">
                     <Award size={24} className="text-orange-500 group-hover:text-white transition-colors duration-500" />
@@ -672,11 +679,7 @@ const About = () => {
             {[0, 1, 2].map((idx) => (
               <button 
                 key={idx} 
-                onClick={() => {
-                  if(scrollRef.current) {
-                    scrollRef.current.scrollTo({ left: scrollRef.current.offsetWidth * idx, behavior: 'smooth' });
-                  }
-                }}
+                onClick={() => scrollToCard(idx)}
                 className={`h-2 rounded-full transition-all duration-300 ${activeIndex === idx ? 'w-8 bg-[#13acd3]' : 'w-2 bg-gray-300'}`}
                 aria-label={`Ir para o card ${idx + 1}`}
               />
@@ -757,6 +760,10 @@ const Frizzolandia = () => {
   const handleHover = (id) => setHighlightedId(id);
   const handleLeave = () => setHighlightedId(null);
 
+  const toggleHighlight = (id) => {
+    setHighlightedId(highlightedId === id ? null : id);
+  };
+
   return (
     <section id="porque-frizzo" className="py-12 lg:py-28 bg-[#193c5c] overflow-hidden relative">
       <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
@@ -774,14 +781,29 @@ const Frizzolandia = () => {
         <div className="w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-6 lg:p-16 flex flex-col justify-center transform transition-all hover:border-white/20">
           
           <div className="lg:hidden flex flex-col items-center w-full">
-              <div className="mb-8 relative w-40 h-40">
-                 <img src="/img/logo.png" className="w-full h-full object-contain" alt="Logo Frizzo" />
+              <div className="mb-8 relative w-48 h-48 grid grid-cols-2 grid-rows-2 gap-0 transition-transform duration-700">
+                  <div onClick={() => toggleHighlight(1)} className={`overflow-hidden relative transition-transform duration-500 z-10 ${highlightedId === 1 ? 'scale-105 -translate-x-2 -translate-y-2' : ''}`}>
+                    <img src="/img/logo.png" className="absolute top-0 left-0 w-[200%] h-[200%] max-w-none object-cover" alt="Logo Frizzo Pt 1" />
+                  </div>
+                  <div onClick={() => toggleHighlight(3)} className={`overflow-hidden relative transition-transform duration-500 z-10 ${highlightedId === 3 ? 'scale-105 translate-x-2 -translate-y-2' : ''}`}>
+                    <img src="/img/logo.png" className="absolute top-0 -left-full w-[200%] h-[200%] max-w-none object-cover" alt="Logo Frizzo Pt 2" />
+                  </div>
+                  <div onClick={() => toggleHighlight(2)} className={`overflow-hidden relative transition-transform duration-500 z-10 ${highlightedId === 2 ? 'scale-105 -translate-x-2 translate-y-2' : ''}`}>
+                    <img src="/img/logo.png" className="absolute -top-full left-0 w-[200%] h-[200%] max-w-none object-cover" alt="Logo Frizzo Pt 3" />
+                  </div>
+                  <div onClick={() => toggleHighlight(4)} className={`overflow-hidden relative transition-transform duration-500 z-10 ${highlightedId === 4 ? 'scale-105 translate-x-2 translate-y-2' : ''}`}>
+                    <img src="/img/logo.png" className="absolute -top-full -left-full w-[200%] h-[200%] max-w-none object-cover" alt="Logo Frizzo Pt 4" />
+                  </div>
               </div>
               <div className="grid grid-cols-2 gap-3 w-full">
                 {FRIZZO_ITEMS.map((item) => (
-                  <div key={item.id} className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-center flex flex-col items-center justify-center">
-                      <h3 className="font-bold text-white text-base mb-1">{item.title}</h3>
-                      <p className="text-white/70 text-xs leading-tight">{item.desc}</p>
+                  <div 
+                    key={item.id} 
+                    onClick={() => toggleHighlight(item.id)}
+                    className={`backdrop-blur-sm p-4 rounded-xl text-center flex flex-col items-center justify-center cursor-pointer transition-all duration-500 border border-transparent ${highlightedId === item.id ? 'bg-white/20 border-white/40 shadow-lg scale-105' : 'bg-white/10 hover:bg-white/20'}`}
+                  >
+                      <h3 className="font-bold text-white text-sm sm:text-base mb-1">{item.title}</h3>
+                      <p className="text-white/70 text-[10px] sm:text-xs leading-tight">{item.desc}</p>
                   </div>
                 ))}
               </div>
@@ -901,7 +923,7 @@ const Contact = () => {
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><MessageCircle className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">WhatsApp</h4><p className="text-[10px] md:text-sm text-white/80">Fale Conosco!</p></div>
                 </a>
-                <a href="https://g.page/r/CcAOf9BYGtwiEB0/review" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
+                <a href="https://www.google.com/maps/place/FFrizzo+Seguros/@-23.5786798,-46.7441404,17z" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><Star className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">Avalie-nos</h4><p className="text-[10px] md:text-sm text-white/80">Sua Opinião</p></div>
                 </a>
@@ -1041,12 +1063,18 @@ const Testimonials = () => {
               return (
                 <div key={i} className="h-[200px] lg:h-[230px] bg-[#193c5c] rounded-3xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#13acd3]/20 flex flex-col justify-between relative group">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#13acd3]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
+                  
+                  {/* Fixed stars at the top */}
+                  <div className="relative z-10 flex gap-1 mb-3 shrink-0">
+                    {[...Array(5)].map((_, idx) => <Star key={idx} size={16} className="text-yellow-400 fill-current" />)}
+                  </div>
+                  
+                  {/* Only the text is scrollable */}
                   <div className="relative z-10 flex-grow overflow-y-auto custom-scrollbar pr-2 mb-4">
-                    <div className="flex gap-1 mb-3">
-                      {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-yellow-400 fill-current" />)}
-                    </div>
                     <p className="text-white/90 italic leading-relaxed text-sm md:text-base font-light">"{item.quote}"</p>
                   </div>
+                  
+                  {/* Fixed name at the bottom */}
                   <div className="relative z-10 pt-4 border-t border-white/10 shrink-0">
                     <h4 className="font-bold text-white text-base md:text-lg leading-none">{item.name}</h4>
                   </div>
@@ -1063,7 +1091,7 @@ const Testimonials = () => {
 
         <div className="mt-10 flex justify-center">
           <a 
-            href="https://g.page/r/CcAOf9BYGtwiEB0/review"
+            href="https://www.google.com/maps/place/FFrizzo+Seguros/@-23.5786798,-46.7441404,17z"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-white text-[#193c5c] font-bold py-3 px-6 rounded-2xl border border-gray-200 hover:border-[#13acd3]/50 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md active:scale-95 text-sm md:text-base"
