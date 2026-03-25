@@ -3,7 +3,8 @@ import {
   Menu, X, Instagram, Facebook, Linkedin, 
   Heart, KeyRound, CarFront, Activity, Building2, 
   Home, Smartphone, Plane, MapPin, Clock, Phone, 
-  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Pause, Shield, Info, Maximize, Layers
+  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Pause, Shield, Info, Maximize, Layers,
+  Target, Eye, Award, CheckCircle2
 } from 'lucide-react';
 
 // --- Textos Legais ---
@@ -25,7 +26,7 @@ const termsOfUseContent = (
   <div className="space-y-4 text-gray-600 text-sm leading-relaxed text-left">
     <p>Bem-vindo ao site da <strong>Frizzo Corretora de Seguros</strong>. Ao aceder e utilizar este site, concorda com os presentes Termos de Uso.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">1. Serviços Oferecidos</h4>
-    <p>O nosso site disponibiliza informações sobre os nossos serviços de corretagem de seguros (saúde, automóvel, empresarial, vida, consórcio, etc.) e permite que os utilizadores solicitem cotações online. Os valores e condições apresentados em simulações estão sujeitos a análise e aprovação das respetivas seguradoras.</p>
+    <p>O nosso site disponibiliza informações sobre os nossos serviços de corretagem de seguros (saúde, automóvel, empresarial, vida, consórcio, etc.) e permite que os utilizadores solicititem cotações online. Os valores e condições apresentados em simulações estão sujeitos a análise e aprovação das respetivas seguradoras.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">2. Responsabilidades do Utilizador</h4>
     <p>Ao solicitar uma cotação, o utilizador compromete-se a fornecer informações verdadeiras, exatas e completas. A Frizzo Corretora não se responsabiliza por cotações imprecisas resultantes de dados incorretos fornecidos pelo utilizador.</p>
     <h4 className="font-bold text-gray-800 text-base mt-4">3. Propriedade Intelectual</h4>
@@ -71,34 +72,14 @@ END:VCARD`;
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
-  const idleTimer = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setScrolled(currentScrollY > 20);
-
-      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-
-      lastScrollY.current = currentScrollY;
-
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-      idleTimer.current = setTimeout(() => {
-        setIsVisible(true);
-      }, 1500);
+      setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -114,13 +95,14 @@ const Header = () => {
 
   const navLinks = [
     { name: 'Início', href: '#inicio', icon: Home },
+    { name: 'Sobre', href: '#sobre', icon: Info },
     { name: 'Seguros', href: '#seguros', icon: Shield },
     { name: 'Frizzolândia', href: '#porque-frizzo', icon: Star },
     { name: 'Redes', href: '#frizzolandia', icon: Instagram }, 
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 transform ${isVisible || isOpen ? 'translate-y-0' : '-translate-y-full'} ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-white py-4'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'} py-4`}>
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#01cbfe] to-[#193c5c]"></div>
       
       <nav className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
@@ -550,6 +532,84 @@ const Hero = () => {
   );
 };
 
+const About = () => {
+  return (
+    <section id="sobre" className="py-10 lg:py-22 bg-gray-50 relative overflow-hidden border-b border-gray-100">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-[#13acd3]/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#193c5c]/5 rounded-full blur-3xl translate-y-1/3 translate-x-1/3 pointer-events-none"></div>
+
+      <div className="container mx-auto px-6 relative z-10 max-w-7xl">
+        
+        {/* ROW 1: Intro (1 Column) */}
+        <div className="mb-8 md:mb-12 flex flex-col items-center text-center">
+          <span className="text-[#13acd3] font-bold uppercase tracking-wider text-sm mb-6 block">Conheça a Frizzo</span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#193c5c] mb-12 leading-tight tracking-tight">
+            FRIZZO CORRETORA DE SEGUROS:<br className="hidden md:block"/>
+            Você <span className="text-[#13acd3] relative inline-block">SEGURO
+              <svg className="absolute w-full h-3 -bottom-1 left-0 text-[#13acd3]/30" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 15 Q 50 0 100 15" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/></svg>
+            </span> conosco!
+          </h2>
+          <p className="text-gray-600 text-lg md:text-xl leading-relaxed font-light max-w-6xl mb-4 mx-auto">
+            Com mais de <strong className="font-bold text-[#193c5c]">25 anos de experiência</strong> no mercado, a FRIZZO CORRETORA DE SEGUROS é uma referência em consultoria especializada em seguros. Inicialmente conhecida pelo trabalho dedicado do corretor <strong className="font-bold text-[#193c5c]">Fábio Frizzo</strong>, credenciado pela SUSEP desde 1997, nossa empresa, com sede em São Paulo, evoluiu para se tornar um padrão de qualidade e excelência no setor, sempre focando no que mais importa: <strong className="text-[#13acd3] font-semibold">você, nosso cliente!</strong>
+          </p>
+        </div>
+
+        {/* ROW 2: MVV (3 Columns) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6 md:gap-6">
+            {/* Missão */}
+            <div className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
+               <div className="absolute top-0 left-0 w-full h-1.5 bg-[#13acd3] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+               <div className="bg-[#13acd3]/10 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#13acd3] transition-colors duration-500">
+                  <Target size={24} className="text-[#13acd3] group-hover:text-white transition-colors duration-500" />
+               </div>
+               <h4 className="text-xl font-extrabold text-[#193c5c] mb-2">Nossa Missão</h4>
+               <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                 Proteger você com nossos produtos de seguros, enquanto oferecemos consultoria de primeira linha para assegurar que você faça as melhores escolhas.
+               </p>
+            </div>
+            
+            {/* Visão */}
+            <div className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
+               <div className="absolute top-0 left-0 w-full h-1.5 bg-[#193c5c] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+               <div className="bg-[#193c5c]/10 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#193c5c] transition-colors duration-500">
+                  <Eye size={24} className="text-[#193c5c] group-hover:text-white transition-colors duration-500" />
+               </div>
+               <h4 className="text-xl font-extrabold text-[#193c5c] mb-2">Nossa Visão</h4>
+               <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                 Entender profundamente suas necessidades e garantir que cada serviço oferecido traga tranquilidade e segurança para sua vida.
+               </p>
+            </div>
+            
+            {/* Valores */}
+            <div className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
+               <div className="absolute top-0 left-0 w-full h-1.5 bg-orange-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+               <div className="bg-orange-50 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-orange-400 transition-colors duration-500">
+                  <Award size={24} className="text-orange-500 group-hover:text-white transition-colors duration-500" />
+               </div>
+               <h4 className="text-xl font-extrabold text-[#193c5c] mb-3">Nossos Valores</h4>
+               <ul className="space-y-2.5">
+                 <li className="flex items-start gap-2">
+                   <CheckCircle2 size={18} strokeWidth={2.5} className="text-green-500 shrink-0 mt-0.5" />
+                   <span className="text-gray-600 text-sm leading-tight font-medium">Comprometimento e seriedade no atendimento</span>
+                 </li>
+                 <li className="flex items-start gap-2">
+                   <CheckCircle2 size={18} strokeWidth={2.5} className="text-green-500 shrink-0 mt-0.5" />
+                   <span className="text-gray-600 text-sm leading-tight font-medium">Ética e transparência em todas as informações</span>
+                 </li>
+                 <li className="flex items-start gap-2">
+                   <CheckCircle2 size={18} strokeWidth={2.5} className="text-green-500 shrink-0 mt-0.5" />
+                   <span className="text-gray-600 text-sm leading-tight font-medium">Relação de confiança e lealdade com você</span>
+                 </li>
+               </ul>
+            </div>
+        </div>
+
+      </div>
+    </section>
+  );
+};
+
 const ServiceCard = ({ Icon, title, desc }) => (
   <div className="bg-white/80 backdrop-blur-sm border border-white/40 p-3 sm:p-6 text-center rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer group relative overflow-hidden flex flex-col items-center justify-center h-full">
     <div className="absolute inset-0 bg-gradient-to-br from-[#13acd3]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -882,6 +942,7 @@ const Testimonials = () => {
       setIsAnimating(false);
     }, 400); 
   };
+
   const handlePrev = () => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -890,6 +951,7 @@ const Testimonials = () => {
       setIsAnimating(false);
     }, 400);
   };
+
   const handleDotClick = (index) => {
     if (isAnimating || index === pageIndex) return;
     setIsAnimating(true);
@@ -927,9 +989,9 @@ const Testimonials = () => {
             {Array.from({ length: itemsPerPage }).map((_, i) => {
               const item = testimonials[(pageIndex * itemsPerPage + i) % testimonials.length];
               return (
-                <div key={i} className="h-[220px] lg:h-[360px] bg-[#193c5c] rounded-3xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#13acd3]/20 flex flex-col justify-between relative group">
+                <div key={i} className="h-[200px] lg:h-[230px] bg-[#193c5c] rounded-3xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#13acd3]/20 flex flex-col justify-between relative group">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#13acd3]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
-                  <div className="relative z-10 flex-grow overflow-y-auto hide-scrollbar mb-4">
+                  <div className="relative z-10 flex-grow overflow-y-auto custom-scrollbar pr-2 mb-4">
                     <div className="flex gap-1 mb-3">
                       {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-yellow-400 fill-current" />)}
                     </div>
@@ -1009,7 +1071,7 @@ const initialVideos = [
   { id: 1, src: "/img/video1.mp4", title: "O QUE VOCÊ FARIA COM 30 MIL REAIS? ✈️🚗🏠", link: "https://www.instagram.com/p/DTLkxQTEe42/" }, 
   { id: 2, src: "/img/video2.mp4", title: "Coparticipação: Vale a pena ou não? 🧐", link: "https://www.instagram.com/p/DUbj9KLkdJF/" },
   { id: 3, src: "/img/video3.mp4", title: "Cuidado com as promessas milagrosas no consórcio! ⚠️", link: "https://www.instagram.com/frizzoseguros/" },
-  { id: 4, src: "/img/video4.mp4", title: "Sabia que um diploma pode garantir o seu novo plano de saúde? 😉", link: "https://www.instagram.com/p/DVa8oUeEcV_/" }
+  { id: 4, src: "/img/video4.mp4", title: "Sabia que um diploma guarantee o seu novo plano de saúde? 😉", link: "https://www.instagram.com/p/DVa8oUeEcV_/" }
 ];
 
 const Socials = () => {
@@ -1045,48 +1107,48 @@ const Socials = () => {
 const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
   <footer className="bg-white border-t border-gray-200">
      <div className="container mx-auto py-10 px-6 grid grid-cols-1 md:grid-cols-3 items-center gap-10 text-sm text-gray-600">
-        
-        {/* Coluna Esquerda: Copyright */}
-        <div className="text-center md:text-left flex flex-col gap-1">
-           <span className="font-medium text-[#193c5c] text-base">© 1997 - 2026 Frizzo Corretora de Seguros.</span>
-           <span className="block text-xs text-gray-500 font-semibold tracking-wide">Registro SUSEP: 202030532</span>
-        </div>
-        
-        {/* Coluna Central: Políticas e Design (Sleek Button com borda roxa clara e grossa) */}
-        <div className="flex flex-col items-center justify-center gap-5">
-           <div className="flex justify-center space-x-6">
-              <button onClick={onOpenPrivacy} className="hover:text-[#13acd3] transition-colors focus:outline-none font-medium">Política de Privacidade</button>
-              <button onClick={onOpenTerms} className="hover:text-[#13acd3] transition-colors focus:outline-none font-medium">Termos de Uso</button>
-           </div>
-           
-           <a 
-             href="https://ortzstudios.com.br/" 
-             target="_blank" 
-             rel="noopener noreferrer" 
-             className="group relative flex items-center gap-3 px-6 py-2.5 bg-[#0a0510] border-3 border-[#d8b4fe]/70 rounded-full transition-all duration-300 hover:scale-[1.03] hover:border-[#d8b4fe] hover:shadow-[0_0_15px_rgba(216,180,254,0.3)] active:scale-95 shadow-lg"
-           >
-             <Layers size={18} className="text-[#d8b4fe] group-hover:rotate-[20deg] transition-transform duration-500" />
-             <span className="text-xs text-gray-400 font-medium">
-               Design by <span className="text-white font-bold text-sm ml-1 group-hover:text-[#d8b4fe] transition-colors">OrtLabs</span>
-             </span>
-           </a>
-        </div>
-        
-        {/* Coluna Direita: Redes Sociais */}
-        <div className="flex flex-col items-center justify-center gap-3">
-           <span className="text-sm font-semibold text-[#193c5c]">Redes Sociais</span>
-           <div className="flex justify-center space-x-7">
-               <a href="https://br.linkedin.com/company/frizzoseguros" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
-                 <Linkedin size={26} />
-               </a>
-               <a href="https://www.instagram.com/frizzoseguros/" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
-                 <Instagram size={26} />
-               </a>
-               <a href="https://www.facebook.com/FrizzoCorretoraDeSeguros" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
-                 <Facebook size={26} />
-               </a>
-           </div>
-        </div>
+       
+       {/* Coluna Esquerda: Copyright */}
+       <div className="text-center md:text-left flex flex-col gap-1">
+          <span className="font-medium text-[#193c5c] text-base">© 1997 - 2026 Frizzo Corretora de Seguros.</span>
+          <span className="block text-xs text-gray-500 font-semibold tracking-wide">Registro SUSEP: 202030532</span>
+       </div>
+       
+       {/* Coluna Central: Políticas e Design (Sleek Button com borda roxa clara e grossa) */}
+       <div className="flex flex-col items-center justify-center gap-5">
+          <div className="flex justify-center space-x-6">
+             <button onClick={onOpenPrivacy} className="hover:text-[#13acd3] transition-colors focus:outline-none font-medium">Política de Privacidade</button>
+             <button onClick={onOpenTerms} className="hover:text-[#13acd3] transition-colors focus:outline-none font-medium">Termos de Uso</button>
+          </div>
+          
+          <a 
+            href="https://ortzstudios.com.br/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="group relative flex items-center gap-3 px-6 py-2.5 bg-[#0a0510] border-3 border-[#d8b4fe]/70 rounded-full transition-all duration-300 hover:scale-[1.03] hover:border-[#d8b4fe] hover:shadow-[0_0_15px_rgba(216,180,254,0.3)] active:scale-95 shadow-lg"
+          >
+            <Layers size={18} className="text-[#d8b4fe] group-hover:rotate-[20deg] transition-transform duration-500" />
+            <span className="text-xs text-gray-400 font-medium">
+              Design by <span className="text-white font-bold text-sm ml-1 group-hover:text-[#d8b4fe] transition-colors">OrtLabs</span>
+            </span>
+          </a>
+       </div>
+       
+       {/* Coluna Direita: Redes Sociais */}
+       <div className="flex flex-col items-center justify-center gap-3">
+          <span className="text-sm font-semibold text-[#193c5c]">Redes Sociais</span>
+          <div className="flex justify-center space-x-7">
+              <a href="https://br.linkedin.com/company/frizzoseguros" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
+                <Linkedin size={26} />
+              </a>
+              <a href="https://www.instagram.com/frizzoseguros/" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
+                <Instagram size={26} />
+              </a>
+              <a href="https://www.facebook.com/FrizzoCorretoraDeSeguros" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
+                <Facebook size={26} />
+              </a>
+          </div>
+       </div>
      </div>
   </footer>
 );
@@ -1182,9 +1244,17 @@ export default function App() {
         .mask-linear-gradient { mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; transition: background-color 0.3s; }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(19, 172, 211, 0.5); }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(19, 172, 211, 0.8); }
+        .custom-scrollbar { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+        .custom-scrollbar:hover { scrollbar-color: rgba(19, 172, 211, 0.5) transparent; }
       `}</style>
       <Header />
       <Hero />
+      <About />
       <Services />
       <Partners />
       <Frizzolandia />
