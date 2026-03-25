@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, X, Instagram, Facebook, Linkedin, 
   Heart, KeyRound, CarFront, Activity, Building2, 
-  Home, Smartphone, Plane, MapPin, Clock, Phone, 
-  Mail, MessageCircle, Star, ChevronRight, Briefcase, MoreHorizontal, UserPlus, Play, Pause, Shield, Info, Maximize, Layers,
-  Target, Eye, Award, CheckCircle2
+  Home, Smartphone, Plane, MapPin, Clock, Mail, 
+  MessageCircle, Star, ChevronRight, Briefcase, 
+  MoreHorizontal, UserPlus, Play, Pause, Shield, 
+  Info, Maximize, Layers, Target, Eye, Award, CheckCircle2
 } from 'lucide-react';
 
 // --- Textos Legais ---
@@ -36,8 +37,92 @@ const termsOfUseContent = (
   </div>
 );
 
-// --- Funções Auxiliares ---
+// --- Dados Estáticos (Otimizados para não recriarem a cada render) ---
+const NAV_LINKS = [
+  { name: 'Início', href: '#inicio', icon: Home },
+  { name: 'Sobre', href: '#sobre', icon: Info },
+  { name: 'Seguros', href: '#seguros', icon: Shield },
+  { name: 'Frizzolândia', href: '#porque-frizzo', icon: Star },
+  { name: 'Redes', href: '#frizzolandia', icon: Instagram }, 
+];
 
+const HERO_TABS = ['saude', 'consorcio', 'auto', 'empresarial'];
+
+const HERO_CONTENT = {
+  saude: {
+    title: "O Plano de Saúde Ideal para Você e sua Família.",
+    text: "Com os melhores planos de saúde do mercado, garantimos que você e sua família tenham acesso a um atendimento de excelência.",
+    buttonText: "Faça sua Cotação Gratuita",
+    wppText: "Olá! Gostaria de fazer uma cotação para um plano de saúde.",
+    color: "from-blue-500 to-cyan-500"
+  },
+  consorcio: {
+    title: "Realize Seus Sonhos com o Consórcio Certo.",
+    text: "Planeje a conquista do seu carro ou imóvel de forma inteligente e sem juros. Economia e segurança para o seu futuro.",
+    buttonText: "Simule seu Consórcio",
+    wppText: "Olá! Gostaria de simular um consórcio.",
+    color: "from-amber-400 to-orange-500"
+  },
+  auto: {
+    title: "Seu Veículo Seguro, Sua Rotina sem Imprevistos.",
+    text: "Dirija com a tranquilidade de saber que seu carro está protegido. Coberturas completas e assistência 24h.",
+    buttonText: "Cote seu Seguro Auto",
+    wppText: "Olá! Gostaria de cotar um seguro para meu veículo.",
+    color: "from-indigo-500 to-violet-600"
+  },
+  empresarial: {
+    title: "Proteção Completa para o Seu Negócio.",
+    text: "Garanta a segurança do seu patrimônio e a tranquilidade dos seus colaboradores com nossas soluções empresariais personalizadas.",
+    buttonText: "Cote Seguro Empresarial",
+    wppText: "Olá! Gostaria de uma cotação para seguro empresarial.",
+    color: "from-purple-500 to-indigo-500"
+  }
+};
+
+const SERVICES_LIST = [
+  { Icon: Heart, title: 'Planos de Saúde', desc: 'Cuidado e bem-estar para você e sua família.' },
+  { Icon: KeyRound, title: 'Consórcio', desc: 'A forma inteligente de conquistar seus sonhos.' },
+  { Icon: CarFront, title: 'Seguro Auto', desc: 'Proteção completa para seu veículo.' },
+  { Icon: Activity, title: 'Seguro de Vida', desc: 'Garanta a tranquilidade de quem você ama.' },
+  { Icon: Building2, title: 'Seguro Empresarial', desc: 'Soluções para impulsionar seu negócio.' },
+  { Icon: Home, title: 'Seguro Residencial', desc: 'A segurança que seu lar merece.' },
+  { Icon: Smartphone, title: 'Seguro Celular', desc: 'Proteja seu smartphone contra danos.' },
+  { Icon: Plane, title: 'Seguro Viagem', desc: 'Viaje com total tranquilidade.' },
+];
+
+const PARTNERS_LIST = [
+  '/img/allianz.png', '/img/Amil.png', '/img/Azul.png', '/img/HDI.png', '/img/itau.png', 
+  '/img/Mapfre.png', '/img/Medsenior.png', '/img/Notredame.png', '/img/Porto.png', 
+  '/img/Prevent Senior.png', '/img/Suhai.png', '/img/SulAmérica.png', '/img/Tokio.png', '/img/Yelum.png'
+];
+
+const FRIZZO_ITEMS = [
+  { id: 1, title: 'Experiência', desc: '25+ anos de mercado' },
+  { id: 2, title: 'Confiança', desc: 'Relação próxima' },
+  { id: 3, title: 'Gestão', desc: 'Cuidado com apólices' },
+  { id: 4, title: 'Benefícios', desc: 'Vantagens exclusivas' },
+];
+
+const TESTIMONIALS_LIST = [
+  { quote: "Hoje posso dizer com tranquilidade: é uma equipe em que se pode confiar de olhos fechados. Já cuidavam do seguro do meu carro e agora também me ajudaram com a troca do plano de saúde com maestria.", name: "Tatiane Paula" },
+  { quote: "Foi uma experiência satisfatória gostei muito e super indico é com ffrizzo seguros as coisas se torna bem mais simples...", name: "Joelson Santos" },
+  { quote: "Não daria somente 5 estrelas, mas Mil se fosse possível… a Frizzo cuida de tudo pra mim, seguro auto, seguro saúde… minimamente a uns 10 anos!", name: "Aline do Amaral" },
+  { quote: "Todas as vezes que preciso de alguma informação, esclarecimento ou suporte a Sinistro estão sempre me apoiando e retomando rápido.", name: "Sirlene Iara" },
+  { quote: "Atende todas as expectativas, explicam e esclarecem todas as dúvidas possíveis.", name: "Renan Valentim" },
+  { quote: "Qualidade espetacular, seus serviços e pela seleção e treinamento de seus profissionais.", name: "Angela Silva" },
+  { quote: "Atendimento impecável do Andre Frizzo! Estou extremamente grato e satisfeito com o produto que adquiri.", name: "Eduardo Torreçilha" },
+  { quote: "Excelente! Tenho seguro com eles há mais de 20 anos e sempre com atendimento personalizado e eficaz.", name: "Ana Paula" },
+  { quote: "Com certeza um dos melhores atendimentos e atenção que já recebi.", name: "Leonardo Paiva" }
+];
+
+const INITIAL_VIDEOS = [
+  { id: 1, src: "/img/video1.mp4", title: "O QUE VOCÊ FARIA COM 30 MIL REAIS? ✈️🚗🏠", link: "https://www.instagram.com/p/DTLkxQTEe42/" }, 
+  { id: 2, src: "/img/video2.mp4", title: "Coparticipação: Vale a pena ou não? 🧐", link: "https://www.instagram.com/p/DUbj9KLkdJF/" },
+  { id: 3, src: "/img/video3.mp4", title: "Cuidado com as promessas milagrosas no consórcio! ⚠️", link: "https://www.instagram.com/frizzoseguros/" },
+  { id: 4, src: "/img/video4.mp4", title: "Sabia que um diploma guarantee o seu novo plano de saúde? 😉", link: "https://www.instagram.com/p/DVa8oUeEcV_/" }
+];
+
+// --- Funções Auxiliares de Funcionalidade ---
 const downloadVCard = () => {
   const contact = {
     name: "Frizzo Corretora de Seguros",
@@ -67,7 +152,7 @@ END:VCARD`;
   document.body.removeChild(link);
 };
 
-// --- Componentes ---
+// --- Componentes Principais ---
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -93,14 +178,6 @@ const Header = () => {
     };
   }, [isOpen]);
 
-  const navLinks = [
-    { name: 'Início', href: '#inicio', icon: Home },
-    { name: 'Sobre', href: '#sobre', icon: Info },
-    { name: 'Seguros', href: '#seguros', icon: Shield },
-    { name: 'Frizzolândia', href: '#porque-frizzo', icon: Star },
-    { name: 'Redes', href: '#frizzolandia', icon: Instagram }, 
-  ];
-
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'} py-4`}>
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#01cbfe] to-[#193c5c]"></div>
@@ -108,7 +185,7 @@ const Header = () => {
       <nav className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
         <div className="flex-1 flex justify-start items-center">
           <div className="hidden md:flex items-center space-x-6">
-            {navLinks.map((link) => (
+            {NAV_LINKS.map((link) => (
               <a 
                 key={link.name} 
                 href={link.href} 
@@ -132,7 +209,7 @@ const Header = () => {
               src="/img/logo-header.png" 
               alt="Frizzo Corretora" 
               className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
-              onError={(e) => {e.target.style.display='none'; console.warn("Logo não encontrada.")}} 
+              onError={(e) => {e.target.style.display='none';}} 
             />
           </a>
         </div>
@@ -159,7 +236,7 @@ const Header = () => {
         </div>
         
         <div className="flex flex-col p-6 space-y-2 overflow-y-auto flex-grow">
-          {navLinks.map((link, index) => {
+          {NAV_LINKS.map((link, index) => {
             const Icon = link.icon;
             return (
               <a 
@@ -204,19 +281,17 @@ const Hero = () => {
 
   useEffect(() => {
     if (videoModalOpen) return;
-
-    const tabs = ['saude', 'consorcio', 'auto', 'empresarial'];
     
     const interval = setInterval(() => {
       setActiveTab((currentTab) => {
-        const currentIndex = tabs.indexOf(currentTab);
-        const nextIndex = (currentIndex + 1) % tabs.length;
-        return tabs[nextIndex];
+        const currentIndex = HERO_TABS.indexOf(currentTab);
+        const nextIndex = (currentIndex + 1) % HERO_TABS.length;
+        return HERO_TABS[nextIndex];
       });
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [activeTab, videoModalOpen]);
+  }, [videoModalOpen]);
 
   const handleTogglePlay = () => {
     const video = videoRef.current;
@@ -228,7 +303,7 @@ const Hero = () => {
       setShowOverlay(true);
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     } else {
-      video.play().catch(error => console.warn("Autoplay blocked:", error));
+      video.play().catch(() => {});
       setIsPlaying(true);
       startHideTimer();
     }
@@ -265,41 +340,10 @@ const Hero = () => {
     };
   }, []);
 
-  const content = {
-    saude: {
-      title: "O Plano de Saúde Ideal para Você e sua Família.",
-      text: "Com os melhores planos de saúde do mercado, garantimos que você e sua família tenham acesso a um atendimento de excelência.",
-      buttonText: "Faça sua Cotação Gratuita",
-      wppText: "Olá! Gostaria de fazer uma cotação para um plano de saúde.",
-      color: "from-blue-500 to-cyan-500"
-    },
-    consorcio: {
-      title: "Realize Seus Sonhos com o Consórcio Certo.",
-      text: "Planeje a conquista do seu carro ou imóvel de forma inteligente e sem juros. Economia e segurança para o seu futuro.",
-      buttonText: "Simule seu Consórcio",
-      wppText: "Olá! Gostaria de simular um consórcio.",
-      color: "from-amber-400 to-orange-500"
-    },
-    auto: {
-      title: "Seu Veículo Seguro, Sua Rotina sem Imprevistos.",
-      text: "Dirija com a tranquilidade de saber que seu carro está protegido. Coberturas completas e assistência 24h.",
-      buttonText: "Cote seu Seguro Auto",
-      wppText: "Olá! Gostaria de cotar um seguro para meu veículo.",
-      color: "from-indigo-500 to-violet-600"
-    },
-    empresarial: {
-      title: "Proteção Completa para o Seu Negócio.",
-      text: "Garanta a segurança do seu patrimônio e a tranquilidade dos seus colaboradores com nossas soluções empresariais personalizadas.",
-      buttonText: "Cote Seguro Empresarial",
-      wppText: "Olá! Gostaria de uma cotação para seguro empresarial.",
-      color: "from-purple-500 to-indigo-500"
-    }
-  };
-
-  const currentContent = content[activeTab];
+  const currentContent = HERO_CONTENT[activeTab];
 
   return (
-    <section id="inicio" className="relative w-full min-h-screen flex flex-col justify-center p-4 pt-20 lg:pt-0 bg-[#193c5c] overflow-hidden">
+    <section id="inicio" className="relative w-full min-h-[100dvh] flex flex-col justify-center p-4 pt-20 lg:pt-0 bg-[#193c5c] overflow-hidden">
       
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className={`absolute w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl transition-all duration-1000 ease-in-out
@@ -312,9 +356,9 @@ const Hero = () => {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col h-full justify-center flex-grow">
         
-        <div className="grid lg:grid-cols-2 gap-4 lg:gap-16 items-center flex-grow">
+        <div className="grid lg:grid-cols-2 gap-2 lg:gap-16 items-center flex-grow">
           
-          <div className="text-center lg:text-left w-full flex flex-col justify-center order-2 lg:order-1 pb-12 lg:pb-0">
+          <div className="text-center lg:text-left w-full flex flex-col justify-center order-2 lg:order-1 pb-4 lg:pb-0">
              <div key={activeTab}>
                 <h1 
                   className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-xl animate-blurIn"
@@ -323,7 +367,7 @@ const Hero = () => {
                   {currentContent.title}
                 </h1>
                 <p 
-                  className="text-lg text-white/90 max-w-xl mx-auto lg:mx-0 mb-8 lg:mb-10 leading-relaxed font-light animate-blurIn"
+                  className="text-lg text-white/90 max-w-xl mx-auto lg:mx-0 mb-6 lg:mb-10 leading-relaxed font-light animate-blurIn"
                   style={{ animationDelay: '150ms' }}
                 >
                   {currentContent.text}
@@ -351,7 +395,7 @@ const Hero = () => {
              </div>
           </div>
 
-          <div className="relative w-full flex flex-col justify-center items-center perspective-1000 order-1 lg:order-2 mb-0 lg:mb-0">
+          <div className="relative w-full flex flex-col justify-center items-center perspective-1000 order-1 lg:order-2 mb-2 lg:mb-0">
             
             <div className="flex w-full max-w-xl flex-col items-center mb-0 lg:mb-2 z-20">
                  
@@ -421,7 +465,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="flex justify-center lg:hidden relative z-30 pb-6 w-full">
+        <div className="flex justify-center lg:hidden relative z-30 pb-2 sm:pb-6 w-full">
             <div className="relative bg-white/10 backdrop-blur-md border border-white/20 p-2 rounded-full flex items-center justify-between w-full max-w-sm shadow-2xl">
                 <div 
                   className="absolute top-2 h-[calc(100%-1rem)] bg-white rounded-full transition-all duration-300 ease-out shadow-sm"
@@ -516,6 +560,7 @@ const Hero = () => {
               <video 
                 className="w-full h-full object-cover" 
                 controls 
+                controlsList="nodownload"
                 playsInline 
                 autoPlay
                 poster="/img/Frizzo Corretora de Seguros.png"
@@ -657,17 +702,6 @@ const ServiceCard = ({ Icon, title, desc }) => (
 );
 
 const Services = () => {
-  const services = [
-    { Icon: Heart, title: 'Planos de Saúde', desc: 'Cuidado e bem-estar para você e sua família.' },
-    { Icon: KeyRound, title: 'Consórcio', desc: 'A forma inteligente de conquistar seus sonhos.' },
-    { Icon: CarFront, title: 'Seguro Auto', desc: 'Proteção completa para seu veículo.' },
-    { Icon: Activity, title: 'Seguro de Vida', desc: 'Garanta a tranquilidade de quem você ama.' },
-    { Icon: Building2, title: 'Seguro Empresarial', desc: 'Soluções para impulsionar seu negócio.' },
-    { Icon: Home, title: 'Seguro Residencial', desc: 'A segurança que seu lar merece.' },
-    { Icon: Smartphone, title: 'Seguro Celular', desc: 'Proteja seu smartphone contra danos.' },
-    { Icon: Plane, title: 'Seguro Viagem', desc: 'Viaje com total tranquilidade.' },
-  ];
-
   return (
     <section id="seguros" className="py-12 lg:py-14 overflow-hidden bg-gray-50 relative">
       <div className="absolute top-0 right-0 w-96 h-96 bg-[#13acd3]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
@@ -681,7 +715,7 @@ const Services = () => {
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-lg">Soluções completas e personalizadas para proteger o que mais importa para você, sua família e seus negócios.</p>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-          {services.map((s, i) => <ServiceCard key={i} {...s} />)}
+          {SERVICES_LIST.map((s, i) => <ServiceCard key={i} {...s} />)}
         </div>
       </div>
     </section>
@@ -689,12 +723,6 @@ const Services = () => {
 };
 
 const Partners = () => {
-  const partners = [
-    '/img/allianz.png', '/img/Amil.png', '/img/Azul.png', '/img/HDI.png', '/img/itau.png', 
-    '/img/Mapfre.png', '/img/Medsenior.png', '/img/Notredame.png', '/img/Porto.png', 
-    '/img/Prevent Senior.png', '/img/Suhai.png', '/img/SulAmérica.png', '/img/Tokio.png', '/img/Yelum.png'
-  ];
-
   const getAltName = (path) => {
     const name = path.split('/').pop().replace('.png', '');
     return `Logo da Seguradora ${name.charAt(0).toUpperCase() + name.slice(1)}`;
@@ -707,12 +735,12 @@ const Partners = () => {
         </div>
         <div className="scroller w-full overflow-hidden mask-linear-gradient">
            <div className="scroller-inner flex gap-16 w-max animate-scroll">
-              {partners.map((p, i) => (
+              {PARTNERS_LIST.map((p, i) => (
                 <div key={`p1-${i}`} className="h-14 w-auto grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all duration-500 transform hover:scale-110 cursor-pointer">
                   <img src={p} alt={getAltName(p)} className="h-full w-auto object-contain" />
                 </div>
               ))}
-              {partners.map((p, i) => (
+              {PARTNERS_LIST.map((p, i) => (
                 <div key={`p2-${i}`} className="h-14 w-auto grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all duration-500 transform hover:scale-110 cursor-pointer">
                   <img src={p} alt={getAltName(p)} className="h-full w-auto object-contain" />
                 </div>
@@ -728,13 +756,6 @@ const Frizzolandia = () => {
 
   const handleHover = (id) => setHighlightedId(id);
   const handleLeave = () => setHighlightedId(null);
-
-  const items = [
-    { id: 1, title: 'Experiência', desc: '25+ anos de mercado' },
-    { id: 2, title: 'Confiança', desc: 'Relação próxima' },
-    { id: 3, title: 'Gestão', desc: 'Cuidado com apólices' },
-    { id: 4, title: 'Benefícios', desc: 'Vantagens exclusivas' },
-  ];
 
   return (
     <section id="porque-frizzo" className="py-12 lg:py-28 bg-[#193c5c] overflow-hidden relative">
@@ -757,7 +778,7 @@ const Frizzolandia = () => {
                  <img src="/img/logo.png" className="w-full h-full object-contain" alt="Logo Frizzo" />
               </div>
               <div className="grid grid-cols-2 gap-3 w-full">
-                {items.map((item) => (
+                {FRIZZO_ITEMS.map((item) => (
                   <div key={item.id} className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-center flex flex-col items-center justify-center">
                       <h3 className="font-bold text-white text-base mb-1">{item.title}</h3>
                       <p className="text-white/70 text-xs leading-tight">{item.desc}</p>
@@ -880,7 +901,7 @@ const Contact = () => {
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><MessageCircle className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">WhatsApp</h4><p className="text-[10px] md:text-sm text-white/80">Fale Conosco!</p></div>
                 </a>
-                <a href="https://www.google.com/maps/place/FFrizzo+Seguros/@-23.5786798,-46.7441404,17z" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
+                <a href="https://g.page/r/CcAOf9BYGtwiEB0/review" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center text-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5 hover:border-white/20">
                   <div className="p-3 bg-[#01cbfe]/20 rounded-full text-[#01cbfe]"><Star className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div><h4 className="font-bold text-sm md:text-lg">Avalie-nos</h4><p className="text-[10px] md:text-sm text-white/80">Sua Opinião</p></div>
                 </a>
@@ -935,17 +956,6 @@ const Contact = () => {
 };
 
 const Testimonials = () => {
-  const testimonials = [
-    { quote: "Hoje posso dizer com tranquilidade: é uma equipe em que se pode confiar de olhos fechados. Já cuidavam do seguro do meu carro e agora também me ajudaram com a troca do plano de saúde com maestria.", name: "Tatiane Paula" },
-    { quote: "Foi uma experiência satisfatória gostei muito e super indico é com ffrizzo seguros as coisas se torna bem mais simples...", name: "Joelson Santos" },
-    { quote: "Não daria somente 5 estrelas, mas Mil se fosse possível… a Frizzo cuida de tudo pra mim, seguro auto, seguro saúde… minimamente a uns 10 anos!", name: "Aline do Amaral" },
-    { quote: "Todas as vezes que preciso de alguma informação, esclarecimento ou suporte a Sinistro estão sempre me apoiando e retomando rápido.", name: "Sirlene Iara" },
-    { quote: "Atende todas as expectativas, explicam e esclarecem todas as dúvidas possíveis.", name: "Renan Valentim" },
-    { quote: "Qualidade espetacular, seus serviços e pela seleção e treinamento de seus profissionais.", name: "Angela Silva" },
-    { quote: "Atendimento impecável do Andre Frizzo! Estou extremamente grato e satisfeito com o produto que adquiri.", name: "Eduardo Torreçilha" },
-    { quote: "Excelente! Tenho seguro com eles há mais de 20 anos e sempre com atendimento personalizado e eficaz.", name: "Ana Paula" },
-    { quote: "Com certeza um dos melhores atendimentos e atenção que já recebi.", name: "Leonardo Paiva" }
-  ];
   const [pageIndex, setPageIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -962,7 +972,8 @@ const Testimonials = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const totalPages = Math.ceil(testimonials.length / itemsPerPage);
+  const totalPages = Math.ceil(TESTIMONIALS_LIST.length / itemsPerPage);
+  
   useEffect(() => {
     const interval = setInterval(() => { handleNext(); }, 10000);
     return () => clearInterval(interval);
@@ -996,12 +1007,17 @@ const Testimonials = () => {
   };
 
   return (
-    <section id="depoimentos" className="pt-8 pb-4 lg:pt-12 lg:pb-6 bg-white relative overflow-hidden border-b border-gray-100">
+    <section id="depoimentos" className="pt-8 pb-10 lg:pt-12 lg:pb-16 bg-white relative overflow-hidden border-b border-gray-100">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gray-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none opacity-50"></div>
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
-          <span className="text-[#13acd3] font-bold uppercase tracking-wider text-sm mb-2 block">Prova Social</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-[#193c5c]">O que dizem nossos clientes</h2>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 mb-3">
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, i) => <Star key={i} size={18} className="text-yellow-400 fill-current" />)}
+            </div>
+            <span className="text-[#13acd3] font-bold uppercase tracking-wider text-sm mt-1 md:mt-0">Somos Nota Máxima no Google</span>
+          </div>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-[#193c5c]">Veja o que nossos clientes dizem</h2>
           <div className="w-24 h-1 bg-[#13acd3] mx-auto mt-4 rounded-full"></div>
         </div>
         <div 
@@ -1021,7 +1037,7 @@ const Testimonials = () => {
         >
           <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 transition-all duration-500 ease-in-out transform ${isAnimating ? 'opacity-0 scale-95 translate-y-4' : 'opacity-100 scale-100 translate-y-0'}`}>
             {Array.from({ length: itemsPerPage }).map((_, i) => {
-              const item = testimonials[(pageIndex * itemsPerPage + i) % testimonials.length];
+              const item = TESTIMONIALS_LIST[(pageIndex * itemsPerPage + i) % TESTIMONIALS_LIST.length];
               return (
                 <div key={i} className="h-[200px] lg:h-[230px] bg-[#193c5c] rounded-3xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#13acd3]/20 flex flex-col justify-between relative group">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#13acd3]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
@@ -1044,6 +1060,19 @@ const Testimonials = () => {
             <button key={i} onClick={() => handleDotClick(i)} className={`h-2.5 rounded-full transition-all duration-500 ease-in-out ${pageIndex === i ? 'w-10 bg-[#13acd3]' : 'w-2.5 bg-gray-300 hover:bg-[#193c5c]/50'}`} aria-label={`Ir para a página ${i + 1}`} />
           ))}
         </div>
+
+        <div className="mt-10 flex justify-center">
+          <a 
+            href="https://g.page/r/CcAOf9BYGtwiEB0/review"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-white text-[#193c5c] font-bold py-3 px-6 rounded-2xl border border-gray-200 hover:border-[#13acd3]/50 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md active:scale-95 text-sm md:text-base"
+          >
+            <Star size={18} className="text-yellow-400 fill-current" />
+            Já nos conhece? Avalie a Frizzo também!
+          </a>
+        </div>
+
       </div>
     </section>
   );
@@ -1101,17 +1130,13 @@ const VideoCard = ({ id, src, title, postLink, index, playingVideoId, setPlaying
   );
 };
 
-const initialVideos = [
-  { id: 1, src: "/img/video1.mp4", title: "O QUE VOCÊ FARIA COM 30 MIL REAIS? ✈️🚗🏠", link: "https://www.instagram.com/p/DTLkxQTEe42/" }, 
-  { id: 2, src: "/img/video2.mp4", title: "Coparticipação: Vale a pena ou não? 🧐", link: "https://www.instagram.com/p/DUbj9KLkdJF/" },
-  { id: 3, src: "/img/video3.mp4", title: "Cuidado com as promessas milagrosas no consórcio! ⚠️", link: "https://www.instagram.com/frizzoseguros/" },
-  { id: 4, src: "/img/video4.mp4", title: "Sabia que um diploma guarantee o seu novo plano de saúde? 😉", link: "https://www.instagram.com/p/DVa8oUeEcV_/" }
-];
-
 const Socials = () => {
-  const [socialVideos, setSocialVideos] = useState(initialVideos);
+  const [socialVideos, setSocialVideos] = useState(INITIAL_VIDEOS);
   const [playingVideoId, setPlayingVideoId] = useState(null);
-  useEffect(() => { setSocialVideos([...initialVideos].sort(() => 0.5 - Math.random())); }, []);
+  
+  useEffect(() => { 
+    setSocialVideos([...INITIAL_VIDEOS].sort(() => 0.5 - Math.random())); 
+  }, []);
 
   return (
     <section id="frizzolandia" className="pt-6 pb-20 lg:pt-8 lg:pb-24 bg-[#193c5c] overflow-hidden">
@@ -1140,16 +1165,16 @@ const Socials = () => {
 
 const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
   <footer className="bg-white border-t border-gray-200">
-     <div className="container mx-auto py-10 px-6 grid grid-cols-1 md:grid-cols-3 items-center gap-10 text-sm text-gray-600">
+     <div className="container mx-auto py-10 px-6 grid grid-cols-1 md:grid-cols-3 items-center gap-8 md:gap-10 text-sm text-gray-600">
        
        {/* Coluna Esquerda: Copyright */}
-       <div className="text-center md:text-left flex flex-col gap-1">
+       <div className="text-center md:text-left flex flex-col gap-1 order-1">
           <span className="font-medium text-[#193c5c] text-base">© 1997 - 2026 Frizzo Corretora de Seguros.</span>
           <span className="block text-xs text-gray-500 font-semibold tracking-wide">Registro SUSEP: 202030532</span>
        </div>
        
        {/* Coluna Central: Políticas e Design (Sleek Button com borda roxa clara e grossa) */}
-       <div className="flex flex-col items-center justify-center gap-5">
+       <div className="flex flex-col items-center justify-center gap-5 order-2">
           <div className="flex justify-center space-x-6">
              <button onClick={onOpenPrivacy} className="hover:text-[#13acd3] transition-colors focus:outline-none font-medium">Política de Privacidade</button>
              <button onClick={onOpenTerms} className="hover:text-[#13acd3] transition-colors focus:outline-none font-medium">Termos de Uso</button>
@@ -1159,7 +1184,7 @@ const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
             href="https://ortzstudios.com.br/" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="group relative flex items-center gap-3 px-6 py-2.5 bg-[#0a0510] border-3 border-[#d8b4fe]/70 rounded-full transition-all duration-300 hover:scale-[1.03] hover:border-[#d8b4fe] hover:shadow-[0_0_15px_rgba(216,180,254,0.3)] active:scale-95 shadow-lg"
+            className="hidden md:flex group relative items-center gap-3 px-6 py-2.5 bg-[#0a0510] border-[3px] border-[#d8b4fe]/70 rounded-full transition-all duration-300 hover:scale-[1.03] hover:border-[#d8b4fe] hover:shadow-[0_0_15px_rgba(216,180,254,0.3)] active:scale-95 shadow-lg"
           >
             <Layers size={18} className="text-[#d8b4fe] group-hover:rotate-[20deg] transition-transform duration-500" />
             <span className="text-xs text-gray-400 font-medium">
@@ -1169,7 +1194,7 @@ const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
        </div>
        
        {/* Coluna Direita: Redes Sociais */}
-       <div className="flex flex-col items-center justify-center gap-3">
+       <div className="flex flex-col items-center justify-center gap-3 order-3">
           <span className="text-sm font-semibold text-[#193c5c]">Redes Sociais</span>
           <div className="flex justify-center space-x-7">
               <a href="https://br.linkedin.com/company/frizzoseguros" target="_blank" rel="noopener noreferrer" className="text-[#193c5c] opacity-90 hover:opacity-100 transition-all hover:scale-125 transform duration-200">
@@ -1183,6 +1208,22 @@ const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
               </a>
           </div>
        </div>
+
+       {/* Design Button (Aparece apenas no Mobile e sempre por último) */}
+       <div className="flex justify-center md:hidden order-4 mt-4 pt-4 border-t border-gray-100">
+          <a 
+            href="https://ortzstudios.com.br/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="group relative flex items-center gap-3 px-6 py-2.5 bg-[#0a0510] border-[3px] border-[#d8b4fe]/70 rounded-full transition-all duration-300 hover:scale-[1.03] hover:border-[#d8b4fe] hover:shadow-[0_0_15px_rgba(216,180,254,0.3)] active:scale-95 shadow-lg"
+          >
+            <Layers size={18} className="text-[#d8b4fe] group-hover:rotate-[20deg] transition-transform duration-500" />
+            <span className="text-xs text-gray-400 font-medium">
+              Design by <span className="text-white font-bold text-sm ml-1 group-hover:text-[#d8b4fe] transition-colors">OrtLabs</span>
+            </span>
+          </a>
+       </div>
+
      </div>
   </footer>
 );
@@ -1191,7 +1232,9 @@ const Footer = ({ onOpenPrivacy, onOpenTerms }) => (
 const initGoogleAnalytics = () => {
   if (typeof window === 'undefined' || document.getElementById('ga-script')) return;
   const script1 = document.createElement('script');
-  script1.id = 'ga-script'; script1.async = true; script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-0GE33YYLNN';
+  script1.id = 'ga-script';
+  script1.async = true;
+  script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-0GE33YYLNN';
   document.head.appendChild(script1);
   const script2 = document.createElement('script');
   script2.id = 'ga-inline-script';
@@ -1201,18 +1244,27 @@ const initGoogleAnalytics = () => {
 
 const CookieBanner = ({ onOpenPrivacy }) => {
   const [isVisible, setIsVisible] = useState(false);
+  
   useEffect(() => {
     try {
       const consent = localStorage.getItem('cookieConsent');
       if (!consent) setIsVisible(true);
       else if (consent === 'true') initGoogleAnalytics();
-    } catch { setIsVisible(true); }
+    } catch { 
+      setIsVisible(true); 
+    }
   }, []);
+
   const acceptCookies = () => {
-    try { localStorage.setItem('cookieConsent', 'true'); initGoogleAnalytics(); } catch {}
+    try { 
+      localStorage.setItem('cookieConsent', 'true'); 
+      initGoogleAnalytics(); 
+    } catch {}
     setIsVisible(false);
   };
+
   if (!isVisible) return null;
+
   return (
     <div className="fixed bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-auto md:w-[400px] z-[70] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 p-6 animate-slideUpFade">
       <div className="flex items-start gap-4">
@@ -1235,6 +1287,7 @@ const LegalModal = ({ title, content, onClose }) => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = 'unset'; };
   }, []);
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn" onClick={onClose}>
       <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-zoomIn" onClick={e => e.stopPropagation()}>
@@ -1253,14 +1306,33 @@ const LegalModal = ({ title, content, onClose }) => {
 
 export default function App() {
   const [activeModal, setActiveModal] = useState(null); 
+
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO' || e.target.closest('svg')) {
+        e.preventDefault();
+      }
+    };
+    const handleDragStart = (e) => {
+      if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO' || e.target.closest('svg')) {
+        e.preventDefault();
+      }
+    };
+    
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('dragstart', handleDragStart);
+    
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('dragstart', handleDragStart);
+    };
+  }, []);
+
   return (
-    <div className="font-sans antialiased text-gray-800 bg-white selection:bg-[#01cbfe] selection:text-white" onContextMenu={(e) => e.preventDefault()} onDragStart={(e) => e.preventDefault()}>
+    <div className="font-sans antialiased text-gray-800 bg-white selection:bg-[#01cbfe] selection:text-white">
       <style>{`
         html { scroll-behavior: smooth; }
-        body { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
-        input, textarea, select { -webkit-user-select: auto; user-select: auto; }
-        img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
-        .cursor-pointer img { pointer-events: auto; }
+        img, video, svg { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .animate-scroll { animation: scroll 40s linear infinite; }
         .scroller:hover .animate-scroll { animation-play-state: paused; }
