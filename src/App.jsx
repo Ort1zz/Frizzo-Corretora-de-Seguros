@@ -533,8 +533,20 @@ const Hero = () => {
 };
 
 const About = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef(null);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const scrollPosition = scrollRef.current.scrollLeft;
+      const cardWidth = scrollRef.current.offsetWidth;
+      const newIndex = Math.round(scrollPosition / cardWidth);
+      setActiveIndex(newIndex);
+    }
+  };
+
   return (
-    <section id="sobre" className="py-10 lg:py-22 bg-gray-50 relative overflow-hidden border-b border-gray-100">
+    <section id="sobre" className="py-10 lg:py-20 bg-gray-50 relative overflow-hidden border-b border-gray-100">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-[#13acd3]/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#193c5c]/5 rounded-full blur-3xl translate-y-1/3 translate-x-1/3 pointer-events-none"></div>
@@ -543,66 +555,88 @@ const About = () => {
         
         {/* ROW 1: Intro (1 Column) */}
         <div className="mb-8 md:mb-12 flex flex-col items-center text-center">
-          <span className="text-[#13acd3] font-bold uppercase tracking-wider text-sm mb-6 block">Conheça a Frizzo</span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#193c5c] mb-12 leading-tight tracking-tight">
+          <span className="text-[#13acd3] font-bold uppercase tracking-wider text-sm mb-3 block">Conheça a Frizzo</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#193c5c] mb-8 md:mb-12 leading-tight tracking-tight">
             FRIZZO CORRETORA DE SEGUROS:<br className="hidden md:block"/>
             Você <span className="text-[#13acd3] relative inline-block">SEGURO
-              <svg className="absolute w-full h-3 -bottom-1 left-0 text-[#13acd3]/30" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 15 Q 50 0 100 15" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/></svg>
+              <svg className="absolute w-full h-2 md:h-3 -bottom-1 md:-bottom-2 left-0 text-[#13acd3]/30" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 15 Q 50 0 100 15" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/></svg>
             </span> conosco!
           </h2>
-          <p className="text-gray-600 text-lg md:text-xl leading-relaxed font-light max-w-6xl mb-4 mx-auto">
+          <p className="text-gray-600 text-base sm:text-lg md:text-xl leading-relaxed font-light max-w-6xl mb-4 mx-auto">
             Com mais de <strong className="font-bold text-[#193c5c]">25 anos de experiência</strong> no mercado, a FRIZZO CORRETORA DE SEGUROS é uma referência em consultoria especializada em seguros. Inicialmente conhecida pelo trabalho dedicado do corretor <strong className="font-bold text-[#193c5c]">Fábio Frizzo</strong>, credenciado pela SUSEP desde 1997, nossa empresa, com sede em São Paulo, evoluiu para se tornar um padrão de qualidade e excelência no setor, sempre focando no que mais importa: <strong className="text-[#13acd3] font-semibold">você, nosso cliente!</strong>
           </p>
         </div>
 
-        {/* ROW 2: MVV (3 Columns) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6 md:gap-6">
-            {/* Missão */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
-               <div className="absolute top-0 left-0 w-full h-1.5 bg-[#13acd3] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-               <div className="bg-[#13acd3]/10 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#13acd3] transition-colors duration-500">
-                  <Target size={24} className="text-[#13acd3] group-hover:text-white transition-colors duration-500" />
-               </div>
-               <h4 className="text-xl font-extrabold text-[#193c5c] mb-2">Nossa Missão</h4>
-               <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                 Proteger você com nossos produtos de seguros, enquanto oferecemos consultoria de primeira linha para assegurar que você faça as melhores escolhas.
-               </p>
-            </div>
-            
-            {/* Visão */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
-               <div className="absolute top-0 left-0 w-full h-1.5 bg-[#193c5c] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-               <div className="bg-[#193c5c]/10 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#193c5c] transition-colors duration-500">
-                  <Eye size={24} className="text-[#193c5c] group-hover:text-white transition-colors duration-500" />
-               </div>
-               <h4 className="text-xl font-extrabold text-[#193c5c] mb-2">Nossa Visão</h4>
-               <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                 Entender profundamente suas necessidades e garantir que cada serviço oferecido traga tranquilidade e segurança para sua vida.
-               </p>
-            </div>
-            
-            {/* Valores */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
-               <div className="absolute top-0 left-0 w-full h-1.5 bg-orange-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-               <div className="bg-orange-50 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-orange-400 transition-colors duration-500">
-                  <Award size={24} className="text-orange-500 group-hover:text-white transition-colors duration-500" />
-               </div>
-               <h4 className="text-xl font-extrabold text-[#193c5c] mb-3">Nossos Valores</h4>
-               <ul className="space-y-2.5">
-                 <li className="flex items-start gap-2">
-                   <CheckCircle2 size={18} strokeWidth={2.5} className="text-green-500 shrink-0 mt-0.5" />
-                   <span className="text-gray-600 text-sm leading-tight font-medium">Comprometimento e seriedade no atendimento</span>
-                 </li>
-                 <li className="flex items-start gap-2">
-                   <CheckCircle2 size={18} strokeWidth={2.5} className="text-green-500 shrink-0 mt-0.5" />
-                   <span className="text-gray-600 text-sm leading-tight font-medium">Ética e transparência em todas as informações</span>
-                 </li>
-                 <li className="flex items-start gap-2">
-                   <CheckCircle2 size={18} strokeWidth={2.5} className="text-green-500 shrink-0 mt-0.5" />
-                   <span className="text-gray-600 text-sm leading-tight font-medium">Relação de confiança e lealdade com você</span>
-                 </li>
-               </ul>
-            </div>
+        {/* ROW 2: MVV (3 Cards) - Carousel on Mobile, Grid on Desktop */}
+        <div className="relative">
+          <div 
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="flex md:grid md:grid-cols-3 gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-4 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0"
+          >
+              {/* Missão */}
+              <div className="w-full min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-auto snap-center shrink-0 bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
+                 <div className="absolute top-0 left-0 w-full h-1.5 bg-[#13acd3] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                 <div className="bg-[#13acd3]/10 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#13acd3] transition-colors duration-500">
+                    <Target size={24} className="text-[#13acd3] group-hover:text-white transition-colors duration-500" />
+                 </div>
+                 <h4 className="text-xl font-extrabold text-[#193c5c] mb-2">Nossa Missão</h4>
+                 <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                   Proteger você com nossos produtos de seguros, enquanto oferecemos consultoria de primeira linha para assegurar que você faça as melhores escolhas.
+                 </p>
+              </div>
+              
+              {/* Visão */}
+              <div className="w-full min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-auto snap-center shrink-0 bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
+                 <div className="absolute top-0 left-0 w-full h-1.5 bg-[#193c5c] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                 <div className="bg-[#193c5c]/10 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#193c5c] transition-colors duration-500">
+                    <Eye size={24} className="text-[#193c5c] group-hover:text-white transition-colors duration-500" />
+                 </div>
+                 <h4 className="text-xl font-extrabold text-[#193c5c] mb-2">Nossa Visão</h4>
+                 <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                   Entender profundamente suas necessidades e garantir que cada serviço oferecido traga tranquilidade e segurança para sua vida.
+                 </p>
+              </div>
+              
+              {/* Valores */}
+              <div className="w-full min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-auto snap-center shrink-0 bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group flex flex-col justify-start">
+                 <div className="absolute top-0 left-0 w-full h-1.5 bg-orange-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                 <div className="bg-orange-50 w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:bg-orange-400 transition-colors duration-500">
+                    <Award size={24} className="text-orange-500 group-hover:text-white transition-colors duration-500" />
+                 </div>
+                 <h4 className="text-xl font-extrabold text-[#193c5c] mb-3">Nossos Valores</h4>
+                 <ul className="space-y-2.5">
+                   <li className="flex items-start gap-2">
+                     <CheckCircle2 size={18} strokeWidth={2.5} className="text-green-500 shrink-0 mt-0.5" />
+                     <span className="text-gray-600 text-sm leading-tight font-medium">Comprometimento e seriedade no atendimento</span>
+                   </li>
+                   <li className="flex items-start gap-2">
+                     <CheckCircle2 size={18} strokeWidth={2.5} className="text-green-500 shrink-0 mt-0.5" />
+                     <span className="text-gray-600 text-sm leading-tight font-medium">Ética e transparência em todas as informações</span>
+                   </li>
+                   <li className="flex items-start gap-2">
+                     <CheckCircle2 size={18} strokeWidth={2.5} className="text-green-500 shrink-0 mt-0.5" />
+                     <span className="text-gray-600 text-sm leading-tight font-medium">Relação de confiança e lealdade com você</span>
+                   </li>
+                 </ul>
+              </div>
+          </div>
+
+          {/* Dots Indicator for Mobile */}
+          <div className="flex justify-center mt-2 gap-2 md:hidden">
+            {[0, 1, 2].map((idx) => (
+              <button 
+                key={idx} 
+                onClick={() => {
+                  if(scrollRef.current) {
+                    scrollRef.current.scrollTo({ left: scrollRef.current.offsetWidth * idx, behavior: 'smooth' });
+                  }
+                }}
+                className={`h-2 rounded-full transition-all duration-300 ${activeIndex === idx ? 'w-8 bg-[#13acd3]' : 'w-2 bg-gray-300'}`}
+                aria-label={`Ir para o card ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
       </div>
